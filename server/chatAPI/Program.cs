@@ -32,6 +32,7 @@ else
     );
 }
 
+// Configuring JWT validation options
 Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
