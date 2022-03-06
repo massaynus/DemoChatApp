@@ -6,6 +6,8 @@ namespace chatAPI.Repositories;
 public interface IUserRepository : IDisposable
 {
     IEnumerable<DTOs.User> GetAll();
+    IEnumerable<DTOs.User> GetUsersByStatus(string status);
+
     DTOs.User GetUserById(Guid id);
     DTOs.User GetUserByAccountId(Guid id);
 

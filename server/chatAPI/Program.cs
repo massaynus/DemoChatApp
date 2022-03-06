@@ -1,5 +1,6 @@
 using System.Text;
 using chatAPI.Data;
+using chatAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +48,10 @@ Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
         };
     });
+
+// Injecting the Repositories
+Services.AddScoped<IUserRepository, DBUsersRepository>();
+Services.AddScoped<IAuthRepository, DbAuthRepository>();
 
 
 Services.AddControllers();

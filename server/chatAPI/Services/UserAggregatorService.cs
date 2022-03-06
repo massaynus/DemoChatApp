@@ -1,57 +1,47 @@
-using chatAPI.Data;
 using chatAPI.Models;
+using chatAPI.Data;
 
-namespace chatAPI.Repositories;
+namespace chatAPI.Services;
 
-public class DbAuthRepository : IAuthRepository
+public class UserAggregatorService : IUserAggregatorService
 {
     private bool disposedValue;
 
     private readonly ApplicationDbContext _appDb;
     private readonly AuthDbContext _authDb;
 
-    public DbAuthRepository(ApplicationDbContext appDb, AuthDbContext authDb)
+    public UserAggregatorService(ApplicationDbContext appDb, AuthDbContext authDb)
     {
         _appDb = appDb;
         _authDb = authDb;
     }
 
-    public IEnumerable<DTOs.User> GetAll()
+    public DTOs.User BindUserAccount(Guid userId, Guid accountId)
     {
         throw new NotImplementedException();
     }
 
-    public DTOs.User GetUserById(Guid id)
+    public DTOs.User BindUserAccount(Models.User user, Account account)
     {
         throw new NotImplementedException();
     }
 
-    public DTOs.User GetUserByAccountId(Guid id)
+    public DTOs.User GetUser(Account account)
     {
         throw new NotImplementedException();
     }
 
-    public Account CreateAccount(DTOs.User user)
+    public DTOs.User GetUser(Models.User user)
     {
         throw new NotImplementedException();
     }
 
-    public Account UpdateAccount(Guid id, DTOs.User user)
+    public DTOs.User GetUserByAccountID(Guid accountId)
     {
         throw new NotImplementedException();
     }
 
-    public Account DeleteAccount(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Account Authenticate(string username, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Account ChangePassword(Guid accountId, string oldPassword, string newPassword)
+    public DTOs.User GetUserByUserID(Guid userId)
     {
         throw new NotImplementedException();
     }
