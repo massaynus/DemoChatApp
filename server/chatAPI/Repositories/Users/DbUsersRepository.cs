@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Repositories;
 
-public class DBUsersRepository : IUserRepository
+public class DbUsersRepository : IUserRepository
 {
     private bool disposedValue;
 
     private readonly ApplicationDbContext _appDb;
     private readonly IMapper _mapper;
 
-    public DBUsersRepository(ApplicationDbContext appDb,  IMapper mapper)
+    public DbUsersRepository(ApplicationDbContext appDb,  IMapper mapper)
     {
         _appDb = appDb;
         _mapper = mapper;

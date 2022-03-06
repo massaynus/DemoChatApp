@@ -48,7 +48,7 @@ Services.AddAutoMapper(config => {
 });
 
 // Injecting the Repositories
-Services.AddTransient<IUserRepository, DBUsersRepository>();
+Services.AddTransient<IUserRepository, DbUsersRepository>();
 Services.AddTransient<IAuthRepository, DbAuthRepository>();
 
 
