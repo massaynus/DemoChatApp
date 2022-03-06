@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Models;
@@ -7,12 +8,21 @@ public class User
 {
     public Guid ID { get; set; }
 
+    [StringLength(128)]
     public string FirstName { get; set; }
+
+    [StringLength(128)]
     public string LastName { get; set; }
+
+    [StringLength(256)]
+    public string Username { get; set; }
+
     public DateTime DateOfBirht { get; set; }
 
     public Guid AccountID { get; set; }
-    public string Username { get; set; }
+
+
+    [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
 
     public DateTime LastStatusChange { get; set; }
