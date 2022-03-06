@@ -1,3 +1,5 @@
+using chatAPI.Data;
+using chatAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace chatAPI.Controllers;
@@ -7,19 +9,17 @@ namespace chatAPI.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
+    private readonly ApplicationDbContext _db;
 
-    public UsersController(ILogger<UsersController> logger)
+    public UsersController(ILogger<UsersController> logger, ApplicationDbContext db)
     {
         _logger = logger;
+        _db = db;
     }
 
     [HttpGet(Name = "GetUsers")]
-    public IEnumerable<Object> Get()
+    public IEnumerable<User> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new
-        {
-            index
-        })
-        .ToArray();
+        return _db.Users.ToList();
     }
 }
