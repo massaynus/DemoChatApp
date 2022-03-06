@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Models;
 
-[Index(nameof(Username), nameof(AccountID))]
+[Index(nameof(NormalizedUsername), nameof(AccountID))]
 public class User
 {
     public Guid ID { get; set; }
@@ -16,6 +16,8 @@ public class User
 
     [StringLength(256)]
     public string Username { get; set; }
+
+    public string NormalizedUsername { get => Username.ToUpperInvariant(); }
 
     public DateTime DateOfBirht { get; set; }
 
