@@ -5,6 +5,10 @@ namespace chatAPI.Data;
 
 public class AuthDbContext : DbContext
 {
+    public AuthDbContext(DbContextOptions options) : base(options)
+    {
+    }
+
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Role> Roles { get; set; }
 
@@ -12,7 +16,7 @@ public class AuthDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Role>().HasData(
-            new Role {RoleName = "User"}
+            new Role { ID = -1, RoleName = "User" }
         );
     }
 
