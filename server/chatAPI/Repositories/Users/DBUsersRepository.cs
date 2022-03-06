@@ -15,12 +15,7 @@ public class DBUsersRepository : IUserRepository
         _authDb = authDb;
     }
 
-    public Models.User CreateUser(DTOs.User user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Models.User DeleteUser(Guid id)
+    public IEnumerable<DTOs.User> GetUsersByStatus(string status)
     {
         throw new NotImplementedException();
     }
@@ -36,6 +31,16 @@ public class DBUsersRepository : IUserRepository
     }
 
     public DTOs.User GetUserById(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Models.User CreateUser(DTOs.User user)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Models.User DeleteUser(Guid id)
     {
         throw new NotImplementedException();
     }
