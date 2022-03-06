@@ -1,6 +1,31 @@
+using chatAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+if (builder.Configuration.GetValue<bool>("UseInMemoryDB"))
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseInMemoryDatabase("AppDB")
+    );
+
+    builder.Services.AddDbContext<AuthDbContext>(options =>
+        options.UseInMemoryDatabase("AuthDB")
+    );
+}
+else
+{
+    // Expecting lot more weight on ApplicationDbContext so pooling it seems like a good idea
+    // to take initialization perf hit off the request times
+    builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("mssql:app"))
+    );
+
+    builder.Services.AddDbContext<AuthDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("mssql:auth"))
+    );
+}
 
 
 builder.Services.AddControllers();
