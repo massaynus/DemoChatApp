@@ -5,6 +5,7 @@ using chatAPI.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using chatAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var Services = builder.Services;
@@ -27,6 +28,7 @@ else
 }
 
 // Configuring JWT validation options
+Services.AddSingleton<JwtService>();
 Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
