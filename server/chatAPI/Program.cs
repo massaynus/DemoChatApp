@@ -1,16 +1,21 @@
+using System.Text;
 using chatAPI.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+var Services = builder.Services;
+var Configuration = builder.Configuration;
 
-// Add services to the container.
-if (builder.Configuration.GetValue<bool>("UseInMemoryDB"))
+// Add services to the DI container
+if (Configuration.GetValue<bool>("UseInMemoryDB"))
 {
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseInMemoryDatabase("AppDB")
     );
 
-    builder.Services.AddDbContext<AuthDbContext>(options =>
+    Services.AddDbContext<AuthDbContext>(options =>
         options.UseInMemoryDatabase("AuthDB")
     );
 }
@@ -18,24 +23,37 @@ else
 {
     // Expecting lot more weight on ApplicationDbContext so pooling it seems like a good idea
     // to take initialization perf hit off the request times
-    builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("mssql:app"))
+    Services.AddDbContextPool<ApplicationDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("mssql:app"))
     );
 
-    builder.Services.AddDbContext<AuthDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("mssql:auth"))
+    Services.AddDbContext<AuthDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("mssql:auth"))
     );
 }
 
+Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Configuration["Jwt:Issuer"],
+            ValidAudience = Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+        };
+    });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
+Services.AddControllers();
+Services.AddEndpointsApiExplorer();
+Services.AddSwaggerGen();
+
+// Building app HTTP pipeline
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -47,8 +65,12 @@ else
 }
 
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+
+app.UseEndpoints(endpoints => {
+    endpoints.MapControllers();
+});
 
 app.Run();
