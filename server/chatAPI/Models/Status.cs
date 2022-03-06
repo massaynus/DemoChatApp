@@ -6,9 +6,6 @@ namespace chatAPI.Models;
 [Index(nameof(NormalizedStatusName))]
 public class Status
 {
-    private string statusName;
-    private string normalizedStatusName;
-
     public short ID { get; set; }
 
     [StringLength(128)]

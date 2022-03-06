@@ -9,11 +9,11 @@ public interface IAuthRepository : IDisposable
     DTOs.User GetUserById(Guid id);
     DTOs.User GetUserByAccountId(Guid id);
 
-    Models.Account CreateAccount(DTOs.User user);
-    Models.Account UpdateAccount(Guid id, DTOs.User user);
-    Models.Account DeleteAccount(Guid id);
+    Models.User CreateAccount(DTOs.User user);
+    Models.User UpdateAccount(Guid id, DTOs.User user);
+    Models.User DeleteAccount(Guid id);
 
-    Models.Account Authenticate(string username, string password);
-    Models.Account ChangePassword(Guid accountId, string oldPassword, string newPassword);
+    Models.User Authenticate(string username, string password);
+    Models.User ChangePassword(Guid id, string oldPassword, string newPassword);
 
 }

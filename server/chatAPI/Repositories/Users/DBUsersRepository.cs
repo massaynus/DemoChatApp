@@ -1,4 +1,6 @@
+using AutoMapper;
 using chatAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Repositories;
 
@@ -7,32 +9,43 @@ public class DBUsersRepository : IUserRepository
     private bool disposedValue;
 
     private readonly ApplicationDbContext _appDb;
-    private readonly AuthDbContext _authDb;
+    private readonly IMapper _mapper;
 
-    public DBUsersRepository(ApplicationDbContext appDb, AuthDbContext authDb)
+    public DBUsersRepository(ApplicationDbContext appDb,  IMapper mapper)
     {
         _appDb = appDb;
-        _authDb = authDb;
+        _mapper = mapper;
     }
 
     public IEnumerable<DTOs.User> GetUsersByStatus(string status)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(status))
+            return null;
+
+        string normalizedStatus = status.ToUpperInvariant();
+
+        return _appDb.Users
+            .Where(u => u.Status.NormalizedStatusName == normalizedStatus)
+            .Include(u => u.Status)
+            .AsSingleQuery()
+            .Select(u => _mapper.Map<DTOs.User>(u))
+            .AsEnumerable();
     }
 
     public IEnumerable<DTOs.User> GetAll()
     {
-        throw new NotImplementedException();
-    }
-
-    public DTOs.User GetUserByAccountId(Guid id)
-    {
-        throw new NotImplementedException();
+        return _appDb.Users
+                    .Include(u => u.Status)
+                    .AsSingleQuery()
+                    .Select(u => _mapper.Map<DTOs.User>(u))
+                    .AsEnumerable();
     }
 
     public DTOs.User GetUserById(Guid id)
     {
-        throw new NotImplementedException();
+        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
+        if (user is not null) return _mapper.Map<DTOs.User>(user);
+        else return null;
     }
 
     public Models.User CreateUser(DTOs.User user)
@@ -57,7 +70,6 @@ public class DBUsersRepository : IUserRepository
             if (disposing)
             {
                 _appDb.Dispose();
-                _authDb.Dispose();
             }
 
             disposedValue = true;

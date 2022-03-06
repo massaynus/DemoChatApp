@@ -8,12 +8,10 @@ public class DbAuthRepository : IAuthRepository
     private bool disposedValue;
 
     private readonly ApplicationDbContext _appDb;
-    private readonly AuthDbContext _authDb;
 
-    public DbAuthRepository(ApplicationDbContext appDb, AuthDbContext authDb)
+    public DbAuthRepository(ApplicationDbContext appDb)
     {
         _appDb = appDb;
-        _authDb = authDb;
     }
 
     public IEnumerable<DTOs.User> GetAll()
@@ -31,27 +29,27 @@ public class DbAuthRepository : IAuthRepository
         throw new NotImplementedException();
     }
 
-    public Account CreateAccount(DTOs.User user)
+    public User CreateAccount(DTOs.User user)
     {
         throw new NotImplementedException();
     }
 
-    public Account UpdateAccount(Guid id, DTOs.User user)
+    public User UpdateAccount(Guid id, DTOs.User user)
     {
         throw new NotImplementedException();
     }
 
-    public Account DeleteAccount(Guid id)
+    public User DeleteAccount(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public Account Authenticate(string username, string password)
+    public User Authenticate(string username, string password)
     {
         throw new NotImplementedException();
     }
 
-    public Account ChangePassword(Guid accountId, string oldPassword, string newPassword)
+    public User ChangePassword(Guid id, string oldPassword, string newPassword)
     {
         throw new NotImplementedException();
     }
@@ -63,7 +61,6 @@ public class DbAuthRepository : IAuthRepository
             if (disposing)
             {
                 _appDb.Dispose();
-                _authDb.Dispose();
             }
 
             disposedValue = true;

@@ -7,9 +7,7 @@ public interface IUserRepository : IDisposable
 {
     IEnumerable<DTOs.User> GetAll();
     IEnumerable<DTOs.User> GetUsersByStatus(string status);
-
     DTOs.User GetUserById(Guid id);
-    DTOs.User GetUserByAccountId(Guid id);
 
     Models.User CreateUser(DTOs.User user);
     Models.User UpdateUser(Guid id, DTOs.User user);

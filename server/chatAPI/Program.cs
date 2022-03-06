@@ -1,6 +1,7 @@
 using System.Text;
 using chatAPI.Data;
 using chatAPI.Repositories;
+using chatAPI.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,10 +16,6 @@ if (Configuration.GetValue<bool>("UseInMemoryDB"))
     Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseInMemoryDatabase("AppDB")
     );
-
-    Services.AddDbContext<AuthDbContext>(options =>
-        options.UseInMemoryDatabase("AuthDB")
-    );
 }
 else
 {
@@ -26,10 +23,6 @@ else
     // to take initialization perf hit off the request times
     Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("mssql:app"))
-    );
-
-    Services.AddDbContext<AuthDbContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("mssql:auth"))
     );
 }
 
@@ -49,9 +42,14 @@ Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Configure AutoMapper
+Services.AddAutoMapper(config => {
+    config.AddProfile<Mappers>();
+});
+
 // Injecting the Repositories
-Services.AddScoped<IUserRepository, DBUsersRepository>();
-Services.AddScoped<IAuthRepository, DbAuthRepository>();
+Services.AddTransient<IUserRepository, DBUsersRepository>();
+Services.AddTransient<IAuthRepository, DbAuthRepository>();
 
 
 Services.AddControllers();

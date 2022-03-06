@@ -9,5 +9,5 @@ public class Role
     [StringLength(128)]
     public string RoleName { get; set; }
 
-    public virtual IEnumerable<Account> Accounts { get; set; }
+    public virtual IEnumerable<User> Users { get; set; }
 }
