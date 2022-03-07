@@ -53,6 +53,8 @@ Services.AddAutoMapper(config => {
 Services.AddTransient<IUserRepository, DbUsersRepository>();
 Services.AddTransient<IAuthRepository, DbAuthRepository>();
 
+// Adding other helpers
+Services.AddSingleton<CryptoService>();
 
 // MVC Stuff
 Services.AddControllers();
