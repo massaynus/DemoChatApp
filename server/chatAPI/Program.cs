@@ -57,12 +57,14 @@ Services.AddTransient<IAuthRepository, DbAuthRepository>();
 Services.AddSingleton<CryptoService>();
 
 // MVC Stuff
+Services.AddCors();
 Services.AddControllers();
 Services.AddEndpointsApiExplorer();
 Services.AddSwaggerGen();
 
 // Building app HTTP pipeline
 var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -73,6 +75,7 @@ else
     app.UseHttpsRedirection();
 }
 
+app.UseCors();
 app.UseRouting();
 
 app.UseAuthentication();

@@ -35,9 +35,6 @@ public class CryptoService
         Array.Copy(salt, 0, hashBytes, 0, SALT_SIZE);
         Array.Copy(hash, 0, hashBytes, SALT_SIZE, HASH_SIZE);
 
-        Console.WriteLine($"passowrd: {password}\thash: {string.Join('-', hashBytes.Select(b => b.ToString()))}");
-
-
         // Convert to base64
         var base64Hash = Convert.ToBase64String(hashBytes);
 
