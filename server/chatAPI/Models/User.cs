@@ -6,6 +6,9 @@ namespace chatAPI.Models;
 [Index(nameof(NormalizedUsername))]
 public class User
 {
+    private string username;
+    private string normalizedUsername;
+
     public Guid ID { get; set; }
 
     [StringLength(128)]
@@ -15,7 +18,18 @@ public class User
     public string LastName { get; set; }
 
     [StringLength(256)]
-    public string Username { get; set; }
+    public string Username
+    {
+        get => username;
+        set
+        {
+            username = value;
+            normalizedUsername = value.ToUpperInvariant();
+        }
+    }
+
+    [StringLength(256)]
+    public string NormalizedUsername { get => normalizedUsername; }
 
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
@@ -27,7 +41,6 @@ public class User
 
     public DateTime LastStatusChange { get; set; }
 
-    public string NormalizedUsername { get => Username.ToUpperInvariant(); }
 
     public virtual Role Role { get; set; }
 
