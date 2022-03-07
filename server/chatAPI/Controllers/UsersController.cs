@@ -2,7 +2,6 @@ using chatAPI.Data;
 using chatAPI.Models;
 using chatAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 namespace chatAPI.Controllers;
 

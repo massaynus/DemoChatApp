@@ -28,7 +28,6 @@ else
 }
 
 // Configuring JWT validation options
-Services.AddSingleton<JwtService>();
 Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -55,6 +54,7 @@ Services.AddTransient<IAuthRepository, DbAuthRepository>();
 
 // Adding other helpers
 Services.AddSingleton<CryptoService>();
+Services.AddSingleton<JwtService>();
 
 // MVC Stuff
 Services.AddCors();
