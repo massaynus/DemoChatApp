@@ -22,8 +22,8 @@ else
 {
     // Expecting lot more weight on ApplicationDbContext so pooling it seems like a good idea
     // to take initialization perf hit off the request times
-    Services.AddDbContextPool<ApplicationDbContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("mssql:app"))
+    Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("AppDB"))
     );
 }
 
@@ -54,6 +54,7 @@ Services.AddTransient<IUserRepository, DbUsersRepository>();
 Services.AddTransient<IAuthRepository, DbAuthRepository>();
 
 
+// MVC Stuff
 Services.AddControllers();
 Services.AddEndpointsApiExplorer();
 Services.AddSwaggerGen();
