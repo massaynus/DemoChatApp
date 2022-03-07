@@ -18,5 +18,15 @@ public class Mappers : Profile
                 opt => opt.MapFrom(src => src.Role.RoleName)
             )
             .ReverseMap();
+
+        CreateMap<Models.User, DTOs.UserSignUpResponse>()
+            .ForMember(
+                dest => dest.Status,
+                opt => opt.MapFrom(src => src.Status.StatusName)
+            )
+            .ReverseMap();
+
+        CreateMap<Models.User, DTOs.UserSignUpRequest>()
+            .ReverseMap();
     }
 }
