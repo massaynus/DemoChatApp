@@ -30,6 +30,7 @@ public class UsersController : ControllerBase
         return Ok(new {
             p1, p2,
             varifP1vP1 = _cryptoService.Verify(p1, "p1"),
+            varifP1vP2 = _cryptoService.Verify(p1, "p2"),
             // varifP1vP2 = _cryptoService.Verify(_cryptoService.Hash("p1"), "p2"),
         });
     }
