@@ -52,7 +52,7 @@ public class UsersRepository : IUserRepository
         else return null;
     }
 
-    public DTOs.User CreateUser(DTOs.CreateUser user)
+    public DTOs.User CreateUser(DTOs.UserSignUpRequest user)
     {
         Models.User newUser = _mapper.Map<Models.User>(user);
 
