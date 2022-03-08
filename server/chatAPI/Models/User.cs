@@ -3,11 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Models;
 
-[Index(nameof(NormalizedUsername))]
+[Index(nameof(Username), nameof(Email))]
 public class User
 {
-    private string username;
-    private string normalizedUsername;
+    private string email;
 
     public Guid ID { get; set; }
 
@@ -18,21 +17,10 @@ public class User
     public string LastName { get; set; }
 
     [StringLength(256)]
-    public string Username
-    {
-        get => username;
-        set
-        {
-            username = value;
-            normalizedUsername = value.ToUpperInvariant();
-        }
-    }
-
-    [StringLength(256)]
-    public string NormalizedUsername { get => normalizedUsername; }
+    public string Username { get; set; }
 
     [DataType(DataType.EmailAddress)]
-    public string Email { get; set; }
+    public virtual string Email { get => email; set => email = value.ToLowerInvariant(); }
 
     [StringLength(512)]
     public string Password { get; set; }
