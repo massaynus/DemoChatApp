@@ -52,6 +52,11 @@ public class AuthRepository : IAuthRepository
         };
     }
 
+    public DTOs.UserLoginResponse Authenticate(DTOs.UserLoginRequest userLoginRequest)
+    {
+        return Authenticate(userLoginRequest.Username, userLoginRequest.Password);
+    }
+
     public DTOs.User ChangePassword(Guid id, string oldPassword, string newPassword)
     {
         // I think this is beyond scope 😅

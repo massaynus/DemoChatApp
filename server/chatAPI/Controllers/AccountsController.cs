@@ -1,7 +1,9 @@
 using chatAPI.Data;
 using chatAPI.DTOs;
 using chatAPI.Services;
+using chatAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace chatAPI.Controllers;
 
@@ -10,30 +12,43 @@ namespace chatAPI.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
+    private readonly IMapper _mapper;
+
     private readonly ApplicationDbContext _db;
+    private readonly UsersRepository _userRepository;
+    private readonly AuthRepository _authRepository;
+
     private readonly CryptoService _cryptoService;
     private readonly JwtService _jwtService;
 
     public AccountsController(
         ILogger<AccountsController> logger,
         ApplicationDbContext db,
-        CryptoService cryptoService, JwtService jwtService)
+        CryptoService cryptoService,
+        JwtService jwtService,
+        UsersRepository userRepository,
+        AuthRepository authRepository,
+        IMapper mapper)
     {
         _logger = logger;
         _db = db;
         _cryptoService = cryptoService;
         _jwtService = jwtService;
+        _userRepository = userRepository;
+        _authRepository = authRepository;
+        _mapper = mapper;
     }
 
     [HttpPost(Name = "SignUp")]
     public UserSignUpResponse SignUp(UserSignUpRequest userSignUpRequest)
     {
-        throw new NotImplementedException();
+        var result = _userRepository.CreateUser(userSignUpRequest);
+        return _mapper.Map<UserSignUpResponse>(result);
     }
 
     [HttpPost(Name = "SignIn")]
     public UserLoginResponse SignIn(UserLoginRequest userLoginRequest)
     {
-        throw new NotImplementedException();
+        return _authRepository.Authenticate(userLoginRequest);
     }
 }
