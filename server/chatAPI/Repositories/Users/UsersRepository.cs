@@ -1,6 +1,7 @@
 using System.Runtime.Serialization;
 using AutoMapper;
 using chatAPI.Data;
+using chatAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Repositories;
@@ -9,13 +10,15 @@ public class UsersRepository : IUserRepository
 {
     private bool disposedValue;
 
+    private readonly CryptoService _crypto;
     private readonly ApplicationDbContext _appDb;
     private readonly IMapper _mapper;
 
-    public UsersRepository(ApplicationDbContext appDb,  IMapper mapper)
+    public UsersRepository(ApplicationDbContext appDb, IMapper mapper, CryptoService crypto)
     {
         _appDb = appDb;
         _mapper = mapper;
+        _crypto = crypto;
     }
 
     public IEnumerable<DTOs.User> GetUsersByStatus(string status)
@@ -49,10 +52,11 @@ public class UsersRepository : IUserRepository
         else return null;
     }
 
-    public DTOs.User CreateUser(DTOs.User user)
+    public DTOs.User CreateUser(DTOs.CreateUser user)
     {
         Models.User newUser = _mapper.Map<Models.User>(user);
         newUser.LastStatusChange = DateTime.UtcNow;
+        newUser.Password = _crypto.Hash(user.Password);
 
         _appDb.Users.Add(newUser);
         _appDb.SaveChanges();
@@ -85,10 +89,10 @@ public class UsersRepository : IUserRepository
         return _mapper.Map<DTOs.User>(newUser);
     }
 
-    public DTOs.User UpdateUserStatus(Guid id, Models.Status status)
+    public DTOs.User UpdateUserStatus(Models.User user, Models.Status status)
     {
-        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
         user.Status = status;
+        user.LastStatusChange = DateTime.UtcNow;
 
         _appDb.SaveChanges();
 
@@ -97,9 +101,13 @@ public class UsersRepository : IUserRepository
 
     public DTOs.User  UpdateUserStatus(Guid id, string statusName)
     {
+        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
         var status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == statusName.ToUpperInvariant());
+
+        if (user is null) throw new UnknownUserException(id);
         if (status is null) throw new InvalidStatusException(statusName);
-        return UpdateUserStatus(id, status);
+
+        return UpdateUserStatus(user, status);
     }
 
     protected virtual void Dispose(bool disposing)
@@ -125,6 +133,22 @@ public class UsersRepository : IUserRepository
     private class InvalidStatusException : Exception
     {
         public InvalidStatusException(string status) : base($"Invalid status supplied: {status}")
+        {
+        }
+    }
+
+    [Serializable]
+    private class UnknownUserException : Exception
+    {
+        public UnknownUserException()
+        {
+        }
+
+        public UnknownUserException(Guid id) : this(id.ToString())
+        {
+        }
+
+        public UnknownUserException(string usernameOrId) : base($"Unknown user queried: {usernameOrId}")
         {
         }
     }
