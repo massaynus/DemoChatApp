@@ -49,8 +49,8 @@ Services.AddAutoMapper(config => {
 });
 
 // Injecting the Repositories
-Services.AddTransient<IUserRepository, DbUsersRepository>();
-Services.AddTransient<IAuthRepository, DbAuthRepository>();
+Services.AddTransient<IUserRepository, UsersRepository>();
+Services.AddTransient<IAuthRepository, AuthRepository>();
 
 // Adding other helpers
 Services.AddSingleton<CryptoService>();

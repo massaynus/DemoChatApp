@@ -3,13 +3,13 @@ using chatAPI.Models;
 
 namespace chatAPI.Repositories;
 
-public class DbAuthRepository : IAuthRepository
+public class AuthRepository : IAuthRepository
 {
     private bool disposedValue;
 
     private readonly ApplicationDbContext _appDb;
 
-    public DbAuthRepository(ApplicationDbContext appDb)
+    public AuthRepository(ApplicationDbContext appDb)
     {
         _appDb = appDb;
     }
