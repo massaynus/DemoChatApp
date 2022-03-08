@@ -1,56 +1,60 @@
+using AutoMapper;
 using chatAPI.Data;
 using chatAPI.Models;
+using chatAPI.Services;
 
 namespace chatAPI.Repositories;
 
 public class AuthRepository : IAuthRepository
 {
     private bool disposedValue;
-
     private readonly ApplicationDbContext _appDb;
+    private readonly UsersRepository _usersRepository;
+    private readonly JwtService _jwt;
+    private readonly CryptoService _crypto;
+    private readonly IMapper _mapper;
 
-    public AuthRepository(ApplicationDbContext appDb)
+    public AuthRepository(ApplicationDbContext appDb, JwtService jwt, CryptoService crypto, UsersRepository usersRepository, IMapper mapper)
     {
         _appDb = appDb;
+        _jwt = jwt;
+        _crypto = crypto;
+        _usersRepository = usersRepository;
+        _mapper = mapper;
     }
 
     public IEnumerable<DTOs.User> GetAll()
     {
-        throw new NotImplementedException();
+        return _usersRepository.GetAll();
     }
 
     public DTOs.User GetUserById(Guid id)
     {
-        throw new NotImplementedException();
+        return _usersRepository.GetUserById(id);
     }
 
-    public DTOs.User GetUserByAccountId(Guid id)
+    public DTOs.UserLoginResponse Authenticate(string username, string password)
     {
-        throw new NotImplementedException();
+        var user = _appDb.Users.FirstOrDefault(u => u.Username == username);
+        if (user is null || _crypto.Verify(user.Password, password))
+            return new()
+            {
+                Username = username,
+                JWTToken = null,
+                OperationResult = DTOs.UserLoginOperationResult.failure
+            };
+
+        return new()
+        {
+            Username = username,
+            JWTToken = _jwt.GenerateToken(_mapper.Map<DTOs.User>(user)),
+            OperationResult = DTOs.UserLoginOperationResult.success
+        };
     }
 
-    public User CreateAccount(DTOs.User user)
+    public DTOs.User ChangePassword(Guid id, string oldPassword, string newPassword)
     {
-        throw new NotImplementedException();
-    }
-
-    public User UpdateAccount(Guid id, DTOs.User user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public User DeleteAccount(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public User Authenticate(string username, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    public User ChangePassword(Guid id, string oldPassword, string newPassword)
-    {
+        // I think this is beyond scope 😅
         throw new NotImplementedException();
     }
 
