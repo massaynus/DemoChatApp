@@ -28,5 +28,7 @@ public class Mappers : Profile
 
         CreateMap<Models.User, DTOs.UserSignUpRequest>()
             .ReverseMap();
+
+        CreateMap<DTOs.CreateUser, Models.User>();
     }
 }
