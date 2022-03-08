@@ -55,8 +55,10 @@ public class UsersRepository : IUserRepository
     public DTOs.User CreateUser(DTOs.CreateUser user)
     {
         Models.User newUser = _mapper.Map<Models.User>(user);
-        newUser.LastStatusChange = DateTime.UtcNow;
+
         newUser.Password = _crypto.Hash(user.Password);
+        newUser.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Models.Status.DEAFULT_STATUS);
+        newUser.LastStatusChange = DateTime.UtcNow;
 
         _appDb.Users.Add(newUser);
         _appDb.SaveChanges();

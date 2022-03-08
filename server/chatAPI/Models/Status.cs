@@ -6,6 +6,8 @@ namespace chatAPI.Models;
 [Index(nameof(NormalizedStatusName))]
 public class Status
 {
+    public const string DEAFULT_STATUS = "ON BREAK";
+
     private string statusName;
     private string normalizedStatusName;
 
