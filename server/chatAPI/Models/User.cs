@@ -16,12 +16,14 @@ public class User
     [StringLength(128)]
     public string LastName { get; set; }
 
+    [Required]
     [StringLength(256)]
     public string Username { get; set; }
 
     [DataType(DataType.EmailAddress)]
     public virtual string Email { get => email; set => email = value.ToLowerInvariant(); }
 
+    [Required]
     [StringLength(512)]
     public string Password { get; set; }
 
