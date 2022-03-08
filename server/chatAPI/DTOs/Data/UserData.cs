@@ -3,7 +3,6 @@ namespace chatAPI.DTOs;
 public class User
 {
     public Guid ID { get; set; }
-    public Guid AccountID { get; set; }
 
     public string FirstName { get; set; }
     public string LastName { get; set; }
