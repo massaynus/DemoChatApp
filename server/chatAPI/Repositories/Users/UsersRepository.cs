@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using AutoMapper;
 using chatAPI.Data;
 using Microsoft.EntityFrameworkCore;
@@ -48,19 +49,57 @@ public class UsersRepository : IUserRepository
         else return null;
     }
 
-    public Models.User CreateUser(DTOs.User user)
+    public DTOs.User CreateUser(DTOs.User user)
     {
-        throw new NotImplementedException();
+        Models.User newUser = _mapper.Map<Models.User>(user);
+        newUser.LastStatusChange = DateTime.UtcNow;
+
+        _appDb.Users.Add(newUser);
+        _appDb.SaveChanges();
+
+        return _mapper.Map<DTOs.User>(newUser);
     }
 
-    public Models.User DeleteUser(Guid id)
+    public DTOs.User DeleteUser(Guid id)
     {
-        throw new NotImplementedException();
+        // It's said that this is faster than using .Find()
+        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
+
+        if (user is not null)
+        {
+            _appDb.Users.Remove(user);
+            _appDb.SaveChanges();
+        }
+
+        return _mapper.Map<DTOs.User>(user);
     }
 
-    public Models.User UpdateUser(Guid id, DTOs.User user)
+    public DTOs.User UpdateUser(Guid id, DTOs.User user)
     {
-        throw new NotImplementedException();
+        Models.User newUser = _mapper.Map<Models.User>(user);
+        newUser.ID = id;
+
+        _appDb.Users.Attach(newUser);
+        _appDb.SaveChanges();
+
+        return _mapper.Map<DTOs.User>(newUser);
+    }
+
+    public DTOs.User UpdateUserStatus(Guid id, Models.Status status)
+    {
+        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
+        user.Status = status;
+
+        _appDb.SaveChanges();
+
+        return _mapper.Map<DTOs.User>(user);
+    }
+
+    public DTOs.User  UpdateUserStatus(Guid id, string statusName)
+    {
+        var status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == statusName.ToUpperInvariant());
+        if (status is null) throw new InvalidStatusException(statusName);
+        return UpdateUserStatus(id, status);
     }
 
     protected virtual void Dispose(bool disposing)
@@ -80,5 +119,13 @@ public class UsersRepository : IUserRepository
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    [Serializable]
+    private class InvalidStatusException : Exception
+    {
+        public InvalidStatusException(string status) : base($"Invalid status supplied: {status}")
+        {
+        }
     }
 }
