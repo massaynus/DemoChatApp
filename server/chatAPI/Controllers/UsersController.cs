@@ -1,36 +1,58 @@
+using AutoMapper;
 using chatAPI.Data;
-using chatAPI.Models;
+using chatAPI.Repositories;
 using chatAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace chatAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
-    private readonly ApplicationDbContext _db;
-    private readonly CryptoService _cryptoService;
+    private readonly IMapper _mapper;
 
-    public UsersController(ILogger<UsersController> logger, ApplicationDbContext db, CryptoService cryptoService)
+    private readonly ApplicationDbContext _db;
+    private readonly UsersRepository _userRepository;
+
+    private readonly JwtService _jwtService;
+
+    public UsersController(
+        ILogger<UsersController> logger,
+        ApplicationDbContext db,
+        UsersRepository userRepository,
+        IMapper mapper,
+        JwtService jwtService)
     {
         _logger = logger;
         _db = db;
-        _cryptoService = cryptoService;
+        _userRepository = userRepository;
+        _mapper = mapper;
+        _jwtService = jwtService;
     }
 
     [HttpGet(Name = "GetUsers")]
-    public IActionResult Get()
+    public IEnumerable<DTOs.User> GetAll()
     {
-        var p1 = _cryptoService.Hash("p1");
-        var p2 = _cryptoService.Hash("p2");
-
-        return Ok(new {
-            p1, p2,
-            varifP1vP1 = _cryptoService.Verify(p1, "p1"),
-            varifP1vP2 = _cryptoService.Verify(p1, "p2"),
-            // varifP1vP2 = _cryptoService.Verify(_cryptoService.Hash("p1"), "p2"),
-        });
+        return _userRepository.GetAll();
     }
+
+    [HttpGet(Name = "GetUsersByStatus")]
+    [Route("[controller]/[action]/{status}")]
+    public IEnumerable<DTOs.User> GetByStatus([FromRoute] string status)
+    {
+        return _userRepository.GetUsersByStatus(status);
+    }
+
+    [HttpPost(Name = "ChangeUserStatus")]
+    public DTOs.UserStatusChangeResponse UpdateStatus(DTOs.UserStatusChangeRequest request)
+    {
+        var userId = _jwtService.GetPPID(HttpContext.User.Claims);
+        return (DTOs.UserStatusChangeResponse) _userRepository.UpdateUserStatus(userId, request.Status);
+    }
+
+
 }
