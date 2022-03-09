@@ -40,7 +40,7 @@ public class UsersController : ControllerBase
         return _userRepository.GetAll();
     }
 
-    [HttpGet("/Statuses", Name = "GetUsers")]
+    [HttpGet("/Statuses", Name = "Statuses")]
     public IEnumerable<Models.Status> GetStatuses()
     {
         return _db.Statuses.AsEnumerable();
