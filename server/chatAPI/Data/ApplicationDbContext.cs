@@ -17,6 +17,13 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<User>()
+            .HasKey(u => u.ID);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
         modelBuilder.Entity<Status>().HasData(
             new Status {ID = -1, StatusName = "ON BREAK"},
             new Status {ID = -2, StatusName = "ON CALL"},
