@@ -28,6 +28,8 @@ public class Mappers : Profile
 
         CreateMap<DTOs.User, DTOs.UserSignUpResponse>();
 
+        CreateMap<DTOs.User, DTOs.UserStatusChangeResponse>();
+
         CreateMap<DTOs.UserSignUpRequest, Models.User>();
     }
 }

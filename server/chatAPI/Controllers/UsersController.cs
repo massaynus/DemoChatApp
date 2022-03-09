@@ -40,6 +40,12 @@ public class UsersController : ControllerBase
         return _userRepository.GetAll();
     }
 
+    [HttpGet("/Statuses", Name = "Statuses")]
+    public IEnumerable<Models.Status> GetStatuses()
+    {
+        return _db.Statuses.AsEnumerable();
+    }
+
     [HttpGet("/GetUsersByStatus/{status}", Name = "GetUsersByStatus")]
     public IEnumerable<DTOs.User> GetByStatus([FromRoute] string status)
     {
@@ -51,7 +57,7 @@ public class UsersController : ControllerBase
     {
         var userId = _jwtService.GetPPID(HttpContext.User.Claims);
         var result = _userRepository.UpdateUserStatus(userId, request.Status);
-        return (DTOs.UserStatusChangeResponse)result;
+        return _mapper.Map<DTOs.UserStatusChangeResponse>(result);
     }
 
 
