@@ -20,14 +20,30 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasKey(u => u.ID);
 
+        modelBuilder.Entity<Role>()
+            .HasKey(r => r.ID);
+
+        modelBuilder.Entity<Status>()
+            .HasKey(s => s.ID);
+
+
+        modelBuilder.Entity<Status>()
+            .HasIndex(s => s.NormalizedStatusName)
+            .IsUnique();
+
+        modelBuilder.Entity<Role>()
+            .HasIndex(r => r.RoleName)
+            .IsUnique();
+
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Username)
             .IsUnique();
 
+
         modelBuilder.Entity<Status>().HasData(
-            new Status {ID = -1, StatusName = "ON BREAK"},
-            new Status {ID = -2, StatusName = "ON CALL"},
-            new Status {ID = -3, StatusName = "IN MEETING"}
+            new Status { ID = -1, StatusName = "ON BREAK" },
+            new Status { ID = -2, StatusName = "ON CALL" },
+            new Status { ID = -3, StatusName = "IN MEETING" }
         );
 
         modelBuilder.Entity<Role>().HasData(
