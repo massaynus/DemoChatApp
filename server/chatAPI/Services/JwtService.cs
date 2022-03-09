@@ -26,9 +26,7 @@ public class JwtService
         {
             new Claim(PPID_CLAIM, user.ID.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Username),
-            new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, user.Role),
-            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirht.ToShortDateString()),
         };
 
         var token = new JwtSecurityToken(_config["Jwt:Issuer"],
