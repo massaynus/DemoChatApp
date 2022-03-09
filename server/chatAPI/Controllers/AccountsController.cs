@@ -42,7 +42,17 @@ public class AccountsController : ControllerBase
     [HttpPost("/SignUp", Name = "SignUp")]
     public UserSignUpResponse SignUp(UserSignUpRequest userSignUpRequest)
     {
+        if (_db.Users.Any(u => u.Username == userSignUpRequest.Username))
+        {
+            Response.StatusCode = StatusCodes.Status409Conflict;
+            return new()
+            {
+                Message = "Username is taken"
+            };
+        }
+
         var result = _userRepository.CreateUser(userSignUpRequest);
+        Response.StatusCode = StatusCodes.Status201Created;
         return _mapper.Map<UserSignUpResponse>(result);
     }
 
