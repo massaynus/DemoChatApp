@@ -9,10 +9,12 @@ public class AuthRepository : IAuthRepository
 {
     private bool disposedValue;
     private readonly ApplicationDbContext _appDb;
+
     private readonly IUserRepository _usersRepository;
+    private readonly IMapper _mapper;
+
     private readonly JwtService _jwt;
     private readonly CryptoService _crypto;
-    private readonly IMapper _mapper;
 
     public AuthRepository(
         ApplicationDbContext appDb,
@@ -41,7 +43,8 @@ public class AuthRepository : IAuthRepository
     public DTOs.UserLoginResponse Authenticate(string username, string password)
     {
         var user = _appDb.Users.FirstOrDefault(u => u.Username == username);
-        if (user is null || _crypto.Verify(user.Password, password))
+
+        if (user is null || !_crypto.Verify(user.Password, password))
             return new()
             {
                 Username = username,
