@@ -21,6 +21,13 @@ public class CryptoService
 
     private const string HASH_ALGO = "SHA256";
 
+    private readonly ILogger<CryptoService> _logger;
+
+    public CryptoService(ILogger<CryptoService> logger)
+    {
+        _logger = logger;
+    }
+
     public string Hash(string password, int iterations = ITTERATIONS, string hashAlgorithmName = HASH_ALGO)
     {
         // Create salt
@@ -53,12 +60,19 @@ public class CryptoService
         var pbkdf2 = new Rfc2898DeriveBytes(password, ogSalt, ogHashInfo.Itterations, new HashAlgorithmName(ogHashInfo.Algorithm));
         var newBytes = pbkdf2.GetBytes(HASH_SIZE);
 
+        _logger.LogInformation($"{bytesToString(ogBytes)} vs \n{bytesToString(newBytes)}");
+
         // Look for any unmatching byte
         for (int i = 0; i < HASH_SIZE; i++)
             if (ogBytes[i] != newBytes[i])
                 return false;
 
         return true;
+    }
+
+    private string bytesToString(byte[] arr)
+    {
+        return string.Join('-', arr.Select(b => b.ToString()));
     }
 
     private HashInfo getHashInfo(string base64Hash)
