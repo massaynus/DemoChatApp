@@ -57,8 +57,10 @@ public class UsersRepository : IUserRepository
         Models.User newUser = _mapper.Map<Models.User>(user);
 
         newUser.Password = _crypto.Hash(user.Password);
-        newUser.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Models.Status.DEAFULT_STATUS);
         newUser.LastStatusChange = DateTime.UtcNow;
+
+        newUser.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Models.Status.DEAFULT_STATUS);
+        newUser.Role = _appDb.Roles.FirstOrDefault(r => r.RoleName == Models.Role.DEFAULT_ROLE);
 
         _appDb.Users.Add(newUser);
         _appDb.SaveChanges();
