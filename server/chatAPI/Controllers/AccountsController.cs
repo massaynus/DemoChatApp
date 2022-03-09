@@ -15,8 +15,8 @@ public class AccountsController : ControllerBase
     private readonly IMapper _mapper;
 
     private readonly ApplicationDbContext _db;
-    private readonly UsersRepository _userRepository;
-    private readonly AuthRepository _authRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IAuthRepository _authRepository;
 
     private readonly CryptoService _cryptoService;
     private readonly JwtService _jwtService;
@@ -26,8 +26,8 @@ public class AccountsController : ControllerBase
         ApplicationDbContext db,
         CryptoService cryptoService,
         JwtService jwtService,
-        UsersRepository userRepository,
-        AuthRepository authRepository,
+        IUserRepository userRepository,
+        IAuthRepository authRepository,
         IMapper mapper)
     {
         _logger = logger;

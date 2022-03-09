@@ -9,12 +9,17 @@ public class AuthRepository : IAuthRepository
 {
     private bool disposedValue;
     private readonly ApplicationDbContext _appDb;
-    private readonly UsersRepository _usersRepository;
+    private readonly IUserRepository _usersRepository;
     private readonly JwtService _jwt;
     private readonly CryptoService _crypto;
     private readonly IMapper _mapper;
 
-    public AuthRepository(ApplicationDbContext appDb, JwtService jwt, CryptoService crypto, UsersRepository usersRepository, IMapper mapper)
+    public AuthRepository(
+        ApplicationDbContext appDb,
+        JwtService jwt,
+        CryptoService crypto,
+        IUserRepository usersRepository,
+        IMapper mapper)
     {
         _appDb = appDb;
         _jwt = jwt;

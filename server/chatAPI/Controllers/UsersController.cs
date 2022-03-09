@@ -16,14 +16,14 @@ public class UsersController : ControllerBase
     private readonly IMapper _mapper;
 
     private readonly ApplicationDbContext _db;
-    private readonly UsersRepository _userRepository;
+    private readonly IUserRepository _userRepository;
 
     private readonly JwtService _jwtService;
 
     public UsersController(
         ILogger<UsersController> logger,
         ApplicationDbContext db,
-        UsersRepository userRepository,
+        IUserRepository userRepository,
         IMapper mapper,
         JwtService jwtService)
     {
