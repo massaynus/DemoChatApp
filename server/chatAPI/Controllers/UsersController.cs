@@ -34,24 +34,24 @@ public class UsersController : ControllerBase
         _jwtService = jwtService;
     }
 
-    [HttpGet(Name = "GetUsers")]
+    [HttpGet("/GetUsers", Name = "GetUsers")]
     public IEnumerable<DTOs.User> GetAll()
     {
         return _userRepository.GetAll();
     }
 
-    [HttpGet(Name = "GetUsersByStatus")]
-    [Route("[controller]/[action]/{status}")]
+    [HttpGet("/GetUsersByStatus/{status}", Name = "GetUsersByStatus")]
     public IEnumerable<DTOs.User> GetByStatus([FromRoute] string status)
     {
         return _userRepository.GetUsersByStatus(status);
     }
 
-    [HttpPost(Name = "ChangeUserStatus")]
+    [HttpPost("/ChangeUserStatus", Name = "ChangeUserStatus")]
     public DTOs.UserStatusChangeResponse UpdateStatus(DTOs.UserStatusChangeRequest request)
     {
         var userId = _jwtService.GetPPID(HttpContext.User.Claims);
-        return (DTOs.UserStatusChangeResponse) _userRepository.UpdateUserStatus(userId, request.Status);
+        var result = _userRepository.UpdateUserStatus(userId, request.Status);
+        return (DTOs.UserStatusChangeResponse)result;
     }
 
 

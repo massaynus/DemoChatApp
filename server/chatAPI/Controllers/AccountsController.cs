@@ -39,14 +39,14 @@ public class AccountsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost(Name = "SignUp")]
+    [HttpPost("/SignUp", Name = "SignUp")]
     public UserSignUpResponse SignUp(UserSignUpRequest userSignUpRequest)
     {
         var result = _userRepository.CreateUser(userSignUpRequest);
         return _mapper.Map<UserSignUpResponse>(result);
     }
 
-    [HttpPost(Name = "SignIn")]
+    [HttpPost("/SignIn", Name = "SignIn")]
     public UserLoginResponse SignIn(UserLoginRequest userLoginRequest)
     {
         return _authRepository.Authenticate(userLoginRequest);
