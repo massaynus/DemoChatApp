@@ -24,12 +24,12 @@ public class JwtService
 
         var claims = new[]
         {
-                new Claim(PPID_CLAIM, user.ID.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.DateOfBirth, user.DateOfBirht.ToShortDateString()),
-            };
+            new Claim(PPID_CLAIM, user.ID.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Username),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirht.ToShortDateString()),
+        };
 
         var token = new JwtSecurityToken(_config["Jwt:Issuer"],
           _config["Jwt:Audience"],
@@ -38,5 +38,14 @@ public class JwtService
           signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public Guid GetPPID(IEnumerable<Claim> claims)
+    {
+        var claim = claims.FirstOrDefault(c => c.Type == PPID_CLAIM);
+
+        if (claim is null)  return Guid.Empty;
+
+        return Guid.Parse(claim.Value);
     }
 }
