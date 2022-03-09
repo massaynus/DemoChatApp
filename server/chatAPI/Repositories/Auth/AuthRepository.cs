@@ -2,6 +2,7 @@ using AutoMapper;
 using chatAPI.Data;
 using chatAPI.Models;
 using chatAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Repositories;
 
@@ -42,7 +43,10 @@ public class AuthRepository : IAuthRepository
 
     public DTOs.UserLoginResponse Authenticate(string username, string password)
     {
-        var user = _appDb.Users.FirstOrDefault(u => u.Username == username);
+        var user = _appDb.Users
+            .Include(u => u.Role)
+            .AsSingleQuery()
+            .FirstOrDefault(u => u.Username == username);
 
         if (user is null || !_crypto.Verify(user.Password, password))
             return new()
