@@ -104,9 +104,9 @@ public class UsersRepository : IUserRepository
     public DTOs.User  UpdateUserStatus(Guid id, string statusName)
     {
         var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
-        var status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == statusName.ToUpperInvariant());
-
         if (user is null) throw new UnknownUserException(id);
+
+        var status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == statusName.ToUpperInvariant());
         if (status is null) throw new InvalidStatusException(statusName);
 
         return UpdateUserStatus(user, status);
