@@ -7,6 +7,7 @@ import { User } from "../Types/User";
 import StatusHubClient from '../Lib/StatusHub'
 import Statuses from "./Statuses";
 import Users from "./Users";
+import { Button } from "@mui/material";
 
 
 function Home() {
@@ -28,8 +29,6 @@ function Home() {
 
     const connection = await StatusHubClient(process.env.REACT_APP_API_BASE_URL)
     connection.on("StatusChange", (changedUser: User) => {
-      console.debug(changedUser.lastStatusChange)
-
       setUsers(users => {
         const newUsers = Array.from(users)
         const idx = newUsers.findIndex(u => u.id === changedUser.id)
@@ -41,6 +40,12 @@ function Home() {
       if (user.username === changedUser.username)
         setUser(changedUser)
     });
+  }
+
+  const signOutHandler = () => {
+    window.sessionStorage.removeItem('token')
+    setJwt('')
+    navigate('/login')
   }
 
   React.useEffect(() => {
@@ -55,7 +60,8 @@ function Home() {
 
   return (
     <>
-      <h1>hello {user.username} with status {user.status} </h1>
+      <h1>hello {user.username} with status {user.status} changed at {user.lastStatusChange} </h1>
+      <Button onClick={signOutHandler} variant='outlined' color="secondary">SignOut</Button>
       <Statuses statuses={statuses} />
       <Users users={users} />
     </>
