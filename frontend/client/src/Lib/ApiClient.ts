@@ -53,7 +53,6 @@ export default class ApiClient {
     async getUserByStatus(status: string): Promise<User[]> {
         const response = await this.axios.get(`/api/Users/GetUsersByStatus/${status}`)
         return this.validateReponse(response)
-
     }
 
     async getStatuses(): Promise<Status[]> {

@@ -5,6 +5,8 @@ import { JWTAtom, StatusesAtom, UserAtom, UsersAtom } from "../Lib/Atoms";
 import { useNavigate } from 'react-router-dom'
 import { User } from "../Types/User";
 import StatusHubClient from '../Lib/StatusHub'
+import Statuses from "./Statuses";
+import Users from "./Users";
 
 
 function Home() {
@@ -26,6 +28,8 @@ function Home() {
 
     const connection = await StatusHubClient(process.env.REACT_APP_API_BASE_URL)
     connection.on("StatusChange", (changedUser: User) => {
+      console.debug(changedUser.lastStatusChange)
+
       setUsers(users => {
         const newUsers = Array.from(users)
         const idx = newUsers.findIndex(u => u.id === changedUser.id)
@@ -33,6 +37,7 @@ function Home() {
         return newUsers
       })
 
+      // Relying on the username here is find since its unique in the backend
       if (user.username === changedUser.username)
         setUser(changedUser)
     });
@@ -44,11 +49,17 @@ function Home() {
     }
 
     initialLoad()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-    return (
+  return (
+    <>
       <h1>hello {user.username} with status {user.status} </h1>
-    );
+      <Statuses statuses={statuses} />
+      <Users users={users} />
+    </>
+  );
 }
 
 export default Home;

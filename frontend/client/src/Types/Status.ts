@@ -1,7 +1,7 @@
 import { User } from "./User"
 
 export type Status = {
-    status: string,
+    statusName: string,
 }
 
 export type UpdateStatusRequest = {
