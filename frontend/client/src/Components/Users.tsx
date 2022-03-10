@@ -1,46 +1,52 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import dayjs from 'dayjs';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { User } from '../Types/User'
+
+const columns = [
+    { id: 'id', label: 'id', minWidth: 100 },
+    { id: 'username', label: 'username', minWidth: 100 },
+    { id: 'status', label: 'status', minWidth: 100 },
+    { id: 'lastStatusChange', label: 'last status change', minWidth: 100 },
+    { id: 'elapsed', label: 'elapsed time', minWidth: 100 },
+]
 
 export default function Users({ users }: {
     users: User[]
 }) {
-    const columns = [
-        { id: 'id', label: 'id', minWidth: 100 },
-        { id: 'username', label: 'username', minWidth: 100 },
-        { id: 'status', label: 'status', minWidth: 100 },
-        { id: 'lastStatusChange', label: 'last status change', minWidth: 100 },
-        { id: 'elapsed', label: 'elapsed time', minWidth: 100 },
-    ]
 
-    const now = new Date().getUTCDate()
+    const [now, setNow] = useState(Date.now())
+
+    useEffect(() => {
+        setInterval(() => setNow(Date.now()), 1000)
+    }, [users])
+
     const rows = users.map(user => {
-        console.debug(user.username, user.lastStatusChange, dayjs(dayjs(now).diff(user.lastStatusChange)).format('HH:mm:ss'))
         return {
             ...user,
-            elapsed:  dayjs(dayjs(now).diff(user.lastStatusChange)).format('HH:mm:ss')
+            elapsed: dayjs(now).diff(user.lastStatusChange),
+            lastStatusChange: dayjs(user.lastStatusChange).format('DD/MM/YYYY HH:mm:ss')
         }
     })
 
     const tableRows = rows.map(rowData => (
-            <TableRow hover role="checkbox" tabIndex={-1} key={rowData.id}>
-                <TableCell key={'id'} align={'center'}>
-                    {rowData.id}
-                </TableCell>
-                <TableCell key={'username'} align={'center'}>
-                    {rowData.username}
-                </TableCell>
-                <TableCell key={'status'} align={'center'}>
-                    {rowData.status}
-                </TableCell>
-                <TableCell key={'lastStatusChange'} align={'center'}>
-                    {dayjs(rowData.lastStatusChange).format('DD-MM-YYYY HH:mm:ss')}
-                </TableCell>
-                <TableCell key={'elapsed'} align={'center'}>
-                    {rowData.elapsed}
-                </TableCell>
-            </TableRow>
+        <TableRow hover role="checkbox" tabIndex={-1} key={rowData.id}>
+            <TableCell key={'id'} align={'center'}>
+                {rowData.id}
+            </TableCell>
+            <TableCell key={'username'} align={'center'}>
+                {rowData.username}
+            </TableCell>
+            <TableCell key={'status'} align={'center'}>
+                {rowData.status}
+            </TableCell>
+            <TableCell key={'lastStatusChange'} align={'center'}>
+                {rowData.lastStatusChange}
+            </TableCell>
+            <TableCell key={'elapsed'} align={'center'}>
+                {dayjs(rowData.elapsed).format('HH:mm:ss')}
+            </TableCell>
+        </TableRow>
     ))
 
     return (
