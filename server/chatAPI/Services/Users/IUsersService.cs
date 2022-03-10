@@ -9,7 +9,7 @@ public interface IUserService : IDisposable
     /// Get all users
     /// </summary>
     /// <returns>IEnumerable<User></returns>
-    IEnumerable<UserData> GetAll();
+    IEnumerable<UserData> GetAll(int page);
 
     /// <summary>
     /// Get all users with the supplied status

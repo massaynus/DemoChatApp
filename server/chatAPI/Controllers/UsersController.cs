@@ -35,10 +35,10 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("/api/[controller]/GetUsers", Name = "GetUsers")]
-    public IEnumerable<UserData> GetAll()
+    [HttpGet("/api/[controller]/GetUsers/{page=1}", Name = "GetUsers")]
+    public IEnumerable<UserData> GetAll([FromRoute] int page)
     {
-        return _userService.GetAll();
+        return _userService.GetAll(page);
     }
 
     [HttpGet("/api/[controller]/Statuses", Name = "Statuses")]

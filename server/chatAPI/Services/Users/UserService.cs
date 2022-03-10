@@ -28,9 +28,18 @@ public class UserService : IUserService
         );
     }
 
-    public IEnumerable<UserData> GetAll()
+    public IEnumerable<UserData> GetAll(int page)
     {
-        return _mapper.ProjectTo<UserData>(_usersRepository.GetAll());
+        return GetAll(page, 24);
+    }
+
+    public IEnumerable<UserData> GetAll(int page, int pageSize)
+    {
+        return _mapper.ProjectTo<UserData>(
+            _usersRepository.GetAll()
+                .Skip(page * pageSize)
+                .Take(pageSize)
+        );
     }
 
     public UserData GetUserById(Guid id)
