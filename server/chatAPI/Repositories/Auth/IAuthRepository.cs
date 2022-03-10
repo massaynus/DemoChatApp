@@ -5,12 +5,12 @@ namespace chatAPI.Repositories;
 
 public interface IAuthRepository : IDisposable
 {
-    IEnumerable<DTOs.User> GetAll();
-    DTOs.User GetUserById(Guid id);
+    IQueryable<Models.User> GetAll();
+    IQueryable<Models.User> GetUserById(Guid id);
 
     DTOs.UserLoginResponse Authenticate(DTOs.UserLoginRequest userLoginRequest);
     DTOs.UserLoginResponse Authenticate(string username, string password);
 
-    DTOs.User ChangePassword(Guid id, string oldPassword, string newPassword);
+    IQueryable<Models.User> ChangePassword(Guid id, string oldPassword, string newPassword);
 
 }
