@@ -22,7 +22,7 @@ else
 {
     // Expecting lot more weight on ApplicationDbContext so pooling it seems like a good idea
     // to take initialization perf hit off the request times
-    Services.AddDbContext<ApplicationDbContext>(options =>
+    Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("AppDB"))
     );
 }
