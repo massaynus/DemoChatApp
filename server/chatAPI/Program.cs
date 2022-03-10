@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using chatAPI.Services;
+using chatAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var Services = builder.Services;
@@ -68,6 +69,7 @@ Services.AddCors(opt =>
             .AllowAnyMethod()
             .AllowAnyOrigin()));
 
+Services.AddSignalR();
 Services.AddControllers();
 Services.AddEndpointsApiExplorer();
 Services.AddSwaggerGen();
@@ -94,6 +96,7 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
+    endpoints.MapHub<StatusHub>("/Hubs/Status");
 });
 
 app.Run();

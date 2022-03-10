@@ -5,6 +5,8 @@ using chatAPI.DTOs;
 using chatAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using chatAPI.Hubs;
 
 namespace chatAPI.Controllers;
 
@@ -15,6 +17,7 @@ public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
     private readonly IMapper _mapper;
+    private readonly IHubContext<StatusHub> _statusHub;
 
     private readonly ApplicationDbContext _db;
     private readonly IUserService _userService;
@@ -26,13 +29,15 @@ public class UsersController : ControllerBase
         ApplicationDbContext db,
         IMapper mapper,
         JwtService jwtService,
-        IUserService userService)
+        IUserService userService,
+        IHubContext<StatusHub> statusHub)
     {
         _logger = logger;
         _db = db;
         _mapper = mapper;
         _jwtService = jwtService;
         _userService = userService;
+        _statusHub = statusHub;
     }
 
     [HttpGet("/api/[controller]/GetUsers/{page=0}", Name = "GetUsers")]
@@ -54,10 +59,13 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("/api/[controller]/ChangeUserStatus", Name = "ChangeUserStatus")]
-    public UserStatusChangeResponse UpdateStatus(UserStatusChangeRequest request)
+    public async Task<UserStatusChangeResponse> UpdateStatus(UserStatusChangeRequest request)
     {
         var userId = _jwtService.GetPPID(HttpContext.User.Claims);
         var result = _userService.UpdateUserStatus(userId, request.Status);
+
+        await _statusHub.Clients.All.SendAsync("StatusChange", result);
+
         return _mapper.Map<UserStatusChangeResponse>(result);
     }
 
