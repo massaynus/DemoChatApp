@@ -44,7 +44,8 @@ Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Configure AutoMapper
-Services.AddAutoMapper(config => {
+Services.AddAutoMapper(config =>
+{
     config.AddProfile<Mappers>();
 });
 
@@ -60,7 +61,14 @@ Services.AddSingleton<CryptoService>();
 Services.AddSingleton<JwtService>();
 
 // MVC Stuff
-Services.AddCors();
+Services.AddCors(opt =>
+    opt.AddDefaultPolicy(
+        policy =>
+            policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin()
+            .AllowCredentials()));
+
 Services.AddControllers();
 Services.AddEndpointsApiExplorer();
 Services.AddSwaggerGen();
@@ -84,7 +92,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints => {
+app.UseEndpoints(endpoints =>
+{
     endpoints.MapControllers();
 });
 
