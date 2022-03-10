@@ -1,4 +1,5 @@
 import { Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import {
   Routes,
@@ -17,14 +18,22 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Container>
-        <CssBaseline />
-        <Routes >
-          <Route path="/register" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </Container>
+      <SnackbarProvider
+        variant='success'
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        maxSnack={5}>
+        <Container>
+          <CssBaseline />
+          <Routes >
+            <Route path="/register" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </Container>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

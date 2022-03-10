@@ -7,10 +7,12 @@ import { User } from "../Types/User";
 import StatusHubClient from '../Lib/StatusHub'
 import Statuses from "./Statuses";
 import Users from "./Users";
-import { Button, Fade, Stack, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Button, Stack, Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 function Home() {
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const [jwt, setJwt] = useRecoilState(JWTAtom)
   const [user, setUser] = useRecoilState(UserAtom)
@@ -29,6 +31,10 @@ function Home() {
 
     const connection = await StatusHubClient(process.env.REACT_APP_API_BASE_URL)
     connection.on("StatusChange", (changedUser: User) => {
+      enqueueSnackbar(
+        `User ${changedUser.username} changed their status to ${changedUser.status}`
+      )
+
       setUsers(users => {
         const newUsers = Array.from(users)
         const idx = newUsers.findIndex(u => u.id === changedUser.id)
