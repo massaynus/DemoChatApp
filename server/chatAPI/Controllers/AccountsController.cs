@@ -15,8 +15,8 @@ public class AccountsController : ControllerBase
     private readonly IMapper _mapper;
 
     private readonly ApplicationDbContext _db;
-    private readonly IUserRepository _userRepository;
-    private readonly IAuthRepository _authRepository;
+    private readonly IUserService _userService;
+    private readonly IAuthService _authService;
 
     private readonly CryptoService _cryptoService;
     private readonly JwtService _jwtService;
@@ -26,17 +26,15 @@ public class AccountsController : ControllerBase
         ApplicationDbContext db,
         CryptoService cryptoService,
         JwtService jwtService,
-        IUserRepository userRepository,
-        IAuthRepository authRepository,
-        IMapper mapper)
+        IMapper mapper, IUserService userService, IAuthService authService)
     {
         _logger = logger;
         _db = db;
         _cryptoService = cryptoService;
         _jwtService = jwtService;
-        _userRepository = userRepository;
-        _authRepository = authRepository;
         _mapper = mapper;
+        _userService = userService;
+        _authService = authService;
     }
 
     [HttpPost("/SignUp", Name = "SignUp")]
@@ -51,7 +49,7 @@ public class AccountsController : ControllerBase
             };
         }
 
-        var result = _userRepository.CreateUser(userSignUpRequest);
+        var result = _userService.CreateUser(userSignUpRequest);
         Response.StatusCode = StatusCodes.Status201Created;
         return _mapper.Map<UserSignUpResponse>(result);
     }
@@ -59,6 +57,6 @@ public class AccountsController : ControllerBase
     [HttpPost("/SignIn", Name = "SignIn")]
     public UserLoginResponse SignIn(UserLoginRequest userLoginRequest)
     {
-        return _authRepository.Authenticate(userLoginRequest);
+        return _authService.Authenticate(userLoginRequest);
     }
 }

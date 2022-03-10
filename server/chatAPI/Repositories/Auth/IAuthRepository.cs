@@ -6,11 +6,11 @@ namespace chatAPI.Repositories;
 public interface IAuthRepository : IDisposable
 {
     IQueryable<Models.User> GetAll();
-    IQueryable<Models.User> GetUserById(Guid id);
+    Models.User GetUserById(Guid id);
 
     DTOs.UserLoginResponse Authenticate(DTOs.UserLoginRequest userLoginRequest);
     DTOs.UserLoginResponse Authenticate(string username, string password);
 
-    IQueryable<Models.User> ChangePassword(Guid id, string oldPassword, string newPassword);
+    Models.User ChangePassword(Guid id, string oldPassword, string newPassword);
 
 }

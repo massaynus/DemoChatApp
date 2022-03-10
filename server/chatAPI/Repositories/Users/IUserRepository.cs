@@ -6,8 +6,8 @@ namespace chatAPI.Repositories;
 public interface IUserRepository : IDisposable
 {
     IQueryable<Models.User> GetAll();
-    IQueryable<Models.User> GetUsersByStatus(string status);
 
+    IQueryable<Models.User> GetUsersByStatus(string status);
     Models.User GetUserById(Guid id);
 
     Models.User CreateUser(Models.User user);

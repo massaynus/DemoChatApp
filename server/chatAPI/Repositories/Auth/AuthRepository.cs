@@ -31,12 +31,12 @@ public class AuthRepository : IAuthRepository
         _mapper = mapper;
     }
 
-    public IEnumerable<DTOs.User> GetAll()
+    public IQueryable<Models.User> GetAll()
     {
         return _usersRepository.GetAll();
     }
 
-    public DTOs.User GetUserById(Guid id)
+    public Models.User GetUserById(Guid id)
     {
         return _usersRepository.GetUserById(id);
     }
@@ -69,7 +69,7 @@ public class AuthRepository : IAuthRepository
         return Authenticate(userLoginRequest.Username, userLoginRequest.Password);
     }
 
-    public DTOs.User ChangePassword(Guid id, string oldPassword, string newPassword)
+    public Models.User ChangePassword(Guid id, string oldPassword, string newPassword)
     {
         // I think this is beyond scope 😅
         throw new NotImplementedException();

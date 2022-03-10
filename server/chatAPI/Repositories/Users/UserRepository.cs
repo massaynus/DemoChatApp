@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Repositories;
 
-public class UsersRepository : IUserRepository
+public class UserRepository : IUserRepository
 {
     private bool disposedValue;
 
@@ -14,7 +14,7 @@ public class UsersRepository : IUserRepository
     private readonly ApplicationDbContext _appDb;
     private readonly IMapper _mapper;
 
-    public UsersRepository(ApplicationDbContext appDb, IMapper mapper, CryptoService crypto)
+    public UserRepository(ApplicationDbContext appDb, IMapper mapper, CryptoService crypto)
     {
         _appDb = appDb;
         _mapper = mapper;

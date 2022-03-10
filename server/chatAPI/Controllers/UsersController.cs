@@ -16,28 +16,27 @@ public class UsersController : ControllerBase
     private readonly IMapper _mapper;
 
     private readonly ApplicationDbContext _db;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
     private readonly JwtService _jwtService;
 
     public UsersController(
         ILogger<UsersController> logger,
         ApplicationDbContext db,
-        IUserRepository userRepository,
         IMapper mapper,
-        JwtService jwtService)
+        JwtService jwtService, IUserService userService)
     {
         _logger = logger;
         _db = db;
-        _userRepository = userRepository;
         _mapper = mapper;
         _jwtService = jwtService;
+        _userService = userService;
     }
 
     [HttpGet("/GetUsers", Name = "GetUsers")]
     public IEnumerable<DTOs.User> GetAll()
     {
-        return _userRepository.GetAll();
+        return _userService.GetAll();
     }
 
     [HttpGet("/Statuses", Name = "Statuses")]
@@ -49,14 +48,14 @@ public class UsersController : ControllerBase
     [HttpGet("/GetUsersByStatus/{status}", Name = "GetUsersByStatus")]
     public IEnumerable<DTOs.User> GetByStatus([FromRoute] string status)
     {
-        return _userRepository.GetUsersByStatus(status);
+        return _userService.GetUsersByStatus(status);
     }
 
     [HttpPost("/ChangeUserStatus", Name = "ChangeUserStatus")]
     public DTOs.UserStatusChangeResponse UpdateStatus(DTOs.UserStatusChangeRequest request)
     {
         var userId = _jwtService.GetPPID(HttpContext.User.Claims);
-        var result = _userRepository.UpdateUserStatus(userId, request.Status);
+        var result = _userService.UpdateUserStatus(userId, request.Status);
         return _mapper.Map<DTOs.UserStatusChangeResponse>(result);
     }
 

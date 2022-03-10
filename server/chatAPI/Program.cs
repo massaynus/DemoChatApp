@@ -49,10 +49,13 @@ Services.AddAutoMapper(config => {
 });
 
 // Injecting the Repositories
-Services.AddTransient<IUserRepository, UsersRepository>();
+Services.AddTransient<IUserRepository, UserRepository>();
 Services.AddTransient<IAuthRepository, AuthRepository>();
 
-// Adding other helpers
+
+// Adding other services
+Services.AddTransient<IAuthService, AuthService>();
+Services.AddTransient<IUserService, UserService>();
 Services.AddSingleton<CryptoService>();
 Services.AddSingleton<JwtService>();
 

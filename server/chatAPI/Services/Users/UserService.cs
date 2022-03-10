@@ -3,7 +3,7 @@ using chatAPI.Repositories;
 
 namespace chatAPI.Services;
 
-public class UsersService : IUserService
+public class UserService : IUserService
 {
     private bool disposedValue;
 
@@ -12,7 +12,7 @@ public class UsersService : IUserService
     private readonly IMapper _mapper;
     private readonly IUserRepository _usersRepository;
 
-    public UsersService(IMapper mapper, CryptoService crypto, IUserRepository usersRepository)
+    public UserService(IMapper mapper, CryptoService crypto, IUserRepository usersRepository)
     {
         _mapper = mapper;
         _crypto = crypto;
