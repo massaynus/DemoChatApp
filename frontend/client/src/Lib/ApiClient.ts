@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosRequestHeaders } from "axios";
+import axios, { Axios, AxiosRequestHeaders, AxiosResponse } from "axios";
 import { LoginRequest, LoginResponse } from "../Types/Login";
 import { SignupRequest, SignupResponse } from "../Types/SignUp";
 import { Status, UpdateStatusRequest, UpdateStatusResponse } from "../Types/Status";
@@ -8,7 +8,7 @@ export default class ApiClient {
     private headers: AxiosRequestHeaders;
     private axios: Axios;
 
-    constructor (apiHost: string = 'http://localhost:5002') {
+    constructor(apiHost: string = 'http://localhost:5002') {
         this.headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${window.sessionStorage.getItem('token') || ''}`
@@ -21,17 +21,17 @@ export default class ApiClient {
             transformResponse: body => JSON.parse(body)
         })
 
-        console.log(`Api Base url: ${apiHost}`)
+        console.debug(`Api Base url: ${apiHost}`)
     }
 
-    async logIn(request: LoginRequest) : Promise<LoginResponse> {
+    async logIn(request: LoginRequest): Promise<LoginResponse> {
         const response = await this.axios.post('/SignIn', JSON.stringify(request))
         const result: LoginResponse = response.data
 
         if (result.operationResult === 1)
             return result
 
-        console.log(result)
+        console.debug(result)
         window.sessionStorage.setItem('token', result.jwtToken)
         window.sessionStorage.setItem('username', result.username)
 
@@ -40,32 +40,41 @@ export default class ApiClient {
         return result
     }
 
-    async signUp(request: SignupRequest) : Promise<SignupResponse> {
-        const response = await  this.axios.post('/SignUp', JSON.stringify(request))
-        return response.data
+    async signUp(request: SignupRequest): Promise<SignupResponse> {
+        const response = await this.axios.post('/SignUp', JSON.stringify(request))
+        return this.validateReponse(response)
     }
 
-    async getUsers(page: number = 0) : Promise<User[]> {
-        const response = await  this.axios.get(`/api/Users/GetUsers/${page}`)
-        return response.data
+    async getUsers(page: number = 0): Promise<User[]> {
+        const response = await this.axios.get(`/api/Users/GetUsers/${page}`)
+        return this.validateReponse(response)
     }
 
-    async getUserByStatus(status: string) : Promise<User[]>{
-        const response = await  this.axios.get(`/api/Users/GetUsersByStatus/${status}`)
-        return response.data
+    async getUserByStatus(status: string): Promise<User[]> {
+        const response = await this.axios.get(`/api/Users/GetUsersByStatus/${status}`)
+        return this.validateReponse(response)
 
     }
 
-    async getStatuses() : Promise<Status[]>{
-        const response = await  this.axios.get('/api/Users/Statuses')
-        return response.data
+    async getStatuses(): Promise<Status[]> {
+        const response = await this.axios.get('/api/Users/Statuses')
+        return this.validateReponse(response)
     }
 
-    async updateStatus(request: UpdateStatusRequest) : Promise<UpdateStatusResponse> {
-        const response = await  this.axios.post('/api/Users/ChangeUserStatus', JSON.stringify(request))
-        return response.data
+    async updateStatus(request: UpdateStatusRequest): Promise<UpdateStatusResponse> {
+        const response = await this.axios.post('/api/Users/ChangeUserStatus', JSON.stringify(request))
+        return this.validateReponse(response)
+    }
+
+    private validateReponse<TReturn>(response: AxiosResponse): TReturn {
+        if (response.status === 401) {
+            window.sessionStorage.removeItem('token')
+            window.location.href = '/'
+        }
+
+        return response.data as TReturn
     }
 
 }
 
-export const instance: ApiClient = new ApiClient(process.env.REACT_APP_API_BASE_URL)
+export const ApiClientInstance: ApiClient = new ApiClient(process.env.REACT_APP_API_BASE_URL)
