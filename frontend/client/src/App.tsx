@@ -9,6 +9,9 @@ import SignUp from './Components/SignUp';
 import { instance } from './Lib/ApiClient';
 
 function App() {
+  instance.getStatuses()
+    .then(s => console.log(s))
+
   return (
     <>
       <div>

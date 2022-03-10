@@ -63,11 +63,10 @@ Services.AddSingleton<JwtService>();
 // MVC Stuff
 Services.AddCors(opt =>
     opt.AddDefaultPolicy(
-        policy =>
-            policy.AllowAnyHeader()
+        policy => policy
+            .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyOrigin()
-            .AllowCredentials()));
+            .AllowAnyOrigin()));
 
 Services.AddControllers();
 Services.AddEndpointsApiExplorer();
