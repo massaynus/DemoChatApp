@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("/api/[controller]/GetUsers/{page=1}", Name = "GetUsers")]
+    [HttpGet("/api/[controller]/GetUsers/{page=0}", Name = "GetUsers")]
     public IEnumerable<UserData> GetAll([FromRoute] int page)
     {
         return _userService.GetAll(page);
