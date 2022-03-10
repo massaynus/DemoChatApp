@@ -20,8 +20,9 @@ export default function Statuses({statuses}: {
       {
         statuses.map(status => (
           <Button
-            variant='contained'
-            color={status.statusName === currentStatus ? 'success' : 'primary'}
+            key={status.statusName}
+            variant={status.statusName === currentStatus ? 'contained' : 'outlined'}
+            color={status.statusName === currentStatus ? 'warning' : 'info'}
             onClick={() => updateStatus(status.statusName)}
           >
             {status.statusName}
