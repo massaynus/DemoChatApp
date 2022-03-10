@@ -8,6 +8,7 @@ namespace chatAPI.Models;
 public class User
 {
     private string email;
+    private DateTime lastStatusChange;
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid ID { get; set; }
@@ -32,7 +33,11 @@ public class User
 
     public DateTime DateOfBirht { get; set; }
 
-    public DateTime LastStatusChange { get; set; }
+    public virtual DateTime LastStatusChange
+    {
+        get => lastStatusChange.ToUniversalTime();
+        set => lastStatusChange = value;
+    }
 
 
     public virtual Role Role { get; set; }
