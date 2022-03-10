@@ -1,6 +1,6 @@
 using AutoMapper;
 using chatAPI.Data;
-using chatAPI.Models;
+using chatAPI.DTOs;
 using chatAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,31 +32,31 @@ public class AuthService : IAuthService
         _authRepository = authRepository;
     }
 
-    public IEnumerable<DTOs.User> GetAll()
+    public IEnumerable<UserData> GetAll()
     {
-        return _mapper.ProjectTo<DTOs.User>(
+        return _mapper.ProjectTo<UserData>(
             _usersRepository.GetAll()
         );
     }
 
-    public DTOs.User GetUserById(Guid id)
+    public UserData GetUserById(Guid id)
     {
-        return _mapper.Map<DTOs.User>(
+        return _mapper.Map<UserData>(
             _usersRepository.GetUserById(id)
         );
     }
 
-    public DTOs.UserLoginResponse Authenticate(string username, string password)
+    public UserLoginResponse Authenticate(string username, string password)
     {
         return _authRepository.Authenticate(username, password);
     }
 
-    public DTOs.UserLoginResponse Authenticate(DTOs.UserLoginRequest userLoginRequest)
+    public UserLoginResponse Authenticate(UserLoginRequest userLoginRequest)
     {
         return Authenticate(userLoginRequest.Username, userLoginRequest.Password);
     }
 
-    public DTOs.User ChangePassword(Guid id, string oldPassword, string newPassword)
+    public UserData ChangePassword(Guid id, string oldPassword, string newPassword)
     {
         // I think this is beyond scope 😅
         throw new NotImplementedException();

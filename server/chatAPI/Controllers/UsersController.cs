@@ -1,14 +1,15 @@
 using AutoMapper;
 using chatAPI.Data;
-using chatAPI.Repositories;
 using chatAPI.Services;
+using chatAPI.DTOs;
+using chatAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace chatAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/api/[controller]")]
 [Authorize]
 public class UsersController : ControllerBase
 {
@@ -24,7 +25,8 @@ public class UsersController : ControllerBase
         ILogger<UsersController> logger,
         ApplicationDbContext db,
         IMapper mapper,
-        JwtService jwtService, IUserService userService)
+        JwtService jwtService,
+        IUserService userService)
     {
         _logger = logger;
         _db = db;
@@ -33,30 +35,30 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("/GetUsers", Name = "GetUsers")]
-    public IEnumerable<DTOs.User> GetAll()
+    [HttpGet("/api/[controller]/GetUsers", Name = "GetUsers")]
+    public IEnumerable<UserData> GetAll()
     {
         return _userService.GetAll();
     }
 
-    [HttpGet("/Statuses", Name = "Statuses")]
-    public IEnumerable<Models.Status> GetStatuses()
+    [HttpGet("/api/[controller]/Statuses", Name = "Statuses")]
+    public IEnumerable<Status> GetStatuses()
     {
         return _db.Statuses.AsEnumerable();
     }
 
-    [HttpGet("/GetUsersByStatus/{status}", Name = "GetUsersByStatus")]
-    public IEnumerable<DTOs.User> GetByStatus([FromRoute] string status)
+    [HttpGet("/api/[controller]/GetUsersByStatus/{status}", Name = "GetUsersByStatus")]
+    public IEnumerable<UserData> GetByStatus([FromRoute] string status)
     {
         return _userService.GetUsersByStatus(status);
     }
 
-    [HttpPost("/ChangeUserStatus", Name = "ChangeUserStatus")]
-    public DTOs.UserStatusChangeResponse UpdateStatus(DTOs.UserStatusChangeRequest request)
+    [HttpPost("/api/[controller]/ChangeUserStatus", Name = "ChangeUserStatus")]
+    public UserStatusChangeResponse UpdateStatus(UserStatusChangeRequest request)
     {
         var userId = _jwtService.GetPPID(HttpContext.User.Claims);
         var result = _userService.UpdateUserStatus(userId, request.Status);
-        return _mapper.Map<DTOs.UserStatusChangeResponse>(result);
+        return _mapper.Map<UserStatusChangeResponse>(result);
     }
 
 

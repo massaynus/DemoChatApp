@@ -1,5 +1,7 @@
 using AutoMapper;
 using chatAPI.Repositories;
+using chatAPI.DTOs;
+using chatAPI.Models;
 
 namespace chatAPI.Services;
 
@@ -19,60 +21,60 @@ public class UserService : IUserService
         _usersRepository = usersRepository;
     }
 
-    public IEnumerable<DTOs.User> GetUsersByStatus(string status)
+    public IEnumerable<UserData> GetUsersByStatus(string status)
     {
-        return _mapper.ProjectTo<DTOs.User>(
+        return _mapper.ProjectTo<UserData>(
             _usersRepository.GetUsersByStatus(status)
         );
     }
 
-    public IEnumerable<DTOs.User> GetAll()
+    public IEnumerable<UserData> GetAll()
     {
-        return _mapper.ProjectTo<DTOs.User>(_usersRepository.GetAll());
+        return _mapper.ProjectTo<UserData>(_usersRepository.GetAll());
     }
 
-    public DTOs.User GetUserById(Guid id)
+    public UserData GetUserById(Guid id)
     {
         var user = _usersRepository.GetUserById(id);
-        if (user is not null) return _mapper.Map<DTOs.User>(user);
+        if (user is not null) return _mapper.Map<UserData>(user);
         else return null;
     }
 
-    public DTOs.User CreateUser(DTOs.UserSignUpRequest user)
+    public UserData CreateUser(UserSignUpRequest user)
     {
-        Models.User newUser = _mapper.Map<Models.User>(user);
+        User newUser = _mapper.Map<User>(user);
         newUser.Password = _crypto.Hash(user.Password);
 
-        return _mapper.Map<DTOs.User>(
+        return _mapper.Map<UserData>(
             _usersRepository.CreateUser(newUser)
         );
     }
 
-    public DTOs.User DeleteUser(Guid id)
+    public UserData DeleteUser(Guid id)
     {
         var user = _usersRepository.DeleteUser(id);
-        return user is not null ? _mapper.Map<DTOs.User>(user) : null;
+        return user is not null ? _mapper.Map<UserData>(user) : null;
     }
 
-    public DTOs.User UpdateUser(Guid id, DTOs.User user)
+    public UserData UpdateUser(Guid id, UserData user)
     {
-        Models.User newUser = _mapper.Map<Models.User>(user);
+        User newUser = _mapper.Map<User>(user);
 
-        return _mapper.Map<DTOs.User>(
+        return _mapper.Map<UserData>(
             _usersRepository.UpdateUser(id, newUser)
         );
     }
 
-    public DTOs.User UpdateUserStatus(Models.User user, Models.Status status)
+    public UserData UpdateUserStatus(User user, Status status)
     {
-        return _mapper.Map<DTOs.User>(
+        return _mapper.Map<UserData>(
             _usersRepository.UpdateUserStatus(user, status)
         );
     }
 
-    public DTOs.User UpdateUserStatus(Guid id, string statusName)
+    public UserData UpdateUserStatus(Guid id, string statusName)
     {
-        return _mapper.Map<DTOs.User>(
+        return _mapper.Map<UserData>(
             _usersRepository.UpdateUserStatus(id, statusName)
         );
     }

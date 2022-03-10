@@ -1,6 +1,7 @@
 using AutoMapper;
 using chatAPI.Data;
 using chatAPI.Models;
+using chatAPI.DTOs;
 using chatAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,17 +32,17 @@ public class AuthRepository : IAuthRepository
         _mapper = mapper;
     }
 
-    public IQueryable<Models.User> GetAll()
+    public IQueryable<User> GetAll()
     {
         return _usersRepository.GetAll();
     }
 
-    public Models.User GetUserById(Guid id)
+    public User GetUserById(Guid id)
     {
         return _usersRepository.GetUserById(id);
     }
 
-    public DTOs.UserLoginResponse Authenticate(string username, string password)
+    public UserLoginResponse Authenticate(string username, string password)
     {
         var user = _appDb.Users
             .Include(u => u.Role)
@@ -53,23 +54,23 @@ public class AuthRepository : IAuthRepository
             {
                 Username = username,
                 JWTToken = null,
-                OperationResult = DTOs.UserLoginOperationResult.failure
+                OperationResult = UserLoginOperationResult.failure
             };
 
         return new()
         {
             Username = username,
-            JWTToken = _jwt.GenerateToken(_mapper.Map<DTOs.User>(user)),
-            OperationResult = DTOs.UserLoginOperationResult.success
+            JWTToken = _jwt.GenerateToken(_mapper.Map<UserData>(user)),
+            OperationResult = UserLoginOperationResult.success
         };
     }
 
-    public DTOs.UserLoginResponse Authenticate(DTOs.UserLoginRequest userLoginRequest)
+    public UserLoginResponse Authenticate(UserLoginRequest userLoginRequest)
     {
         return Authenticate(userLoginRequest.Username, userLoginRequest.Password);
     }
 
-    public Models.User ChangePassword(Guid id, string oldPassword, string newPassword)
+    public User ChangePassword(Guid id, string oldPassword, string newPassword)
     {
         // I think this is beyond scope 😅
         throw new NotImplementedException();

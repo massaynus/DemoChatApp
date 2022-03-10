@@ -1,7 +1,6 @@
 using chatAPI.Data;
 using chatAPI.DTOs;
 using chatAPI.Services;
-using chatAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 
@@ -26,7 +25,9 @@ public class AccountsController : ControllerBase
         ApplicationDbContext db,
         CryptoService cryptoService,
         JwtService jwtService,
-        IMapper mapper, IUserService userService, IAuthService authService)
+        IMapper mapper,
+        IUserService userService,
+        IAuthService authService)
     {
         _logger = logger;
         _db = db;

@@ -1,20 +1,20 @@
-using DTOs = chatAPI.DTOs;
-using Models = chatAPI.Models;
+using chatAPI.DTOs;
+using chatAPI.Models;
 
 namespace chatAPI.Repositories;
 
 public interface IUserRepository : IDisposable
 {
-    IQueryable<Models.User> GetAll();
+    IQueryable<User> GetAll();
 
-    IQueryable<Models.User> GetUsersByStatus(string status);
-    Models.User GetUserById(Guid id);
+    IQueryable<User> GetUsersByStatus(string status);
+    User GetUserById(Guid id);
 
-    Models.User CreateUser(Models.User user);
+    User CreateUser(User user);
 
-    Models.User UpdateUser(Guid id, Models.User user);
-    Models.User UpdateUserStatus(Models.User user, Models.Status status);
-    Models.User UpdateUserStatus(Guid id, string status);
+    User UpdateUser(Guid id, User user);
+    User UpdateUserStatus(User user, Status status);
+    User UpdateUserStatus(Guid id, string status);
 
-    Models.User DeleteUser(Guid id);
+    User DeleteUser(Guid id);
 }

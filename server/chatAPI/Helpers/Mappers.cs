@@ -1,6 +1,6 @@
 using AutoMapper;
-using DTOs = chatAPI.DTOs;
-using Models = chatAPI.Models;
+using chatAPI.DTOs;
+using chatAPI.Models;
 
 namespace chatAPI.Helpers;
 
@@ -8,7 +8,7 @@ public class Mappers : Profile
 {
     public Mappers()
     {
-        CreateMap<Models.User, DTOs.User>()
+        CreateMap<User, UserData>()
             .ForMember(
                 dest => dest.Status,
                 opt => opt.MapFrom(src => src.Status.StatusName)
@@ -19,17 +19,17 @@ public class Mappers : Profile
             )
             .ReverseMap();
 
-        CreateMap<Models.User, DTOs.UserSignUpResponse>()
+        CreateMap<User, UserSignUpResponse>()
             .ForMember(
                 dest => dest.Status,
                 opt => opt.MapFrom(src => src.Status.StatusName)
             )
             .ReverseMap();
 
-        CreateMap<DTOs.User, DTOs.UserSignUpResponse>();
+        CreateMap<UserData, UserSignUpResponse>();
 
-        CreateMap<DTOs.User, DTOs.UserStatusChangeResponse>();
+        CreateMap<UserData, UserStatusChangeResponse>();
 
-        CreateMap<DTOs.UserSignUpRequest, Models.User>();
+        CreateMap<UserSignUpRequest, User>();
     }
 }

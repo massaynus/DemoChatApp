@@ -1,6 +1,6 @@
 namespace chatAPI.DTOs;
 
-public class User
+public class UserData
 {
     public Guid ID { get; set; }
 

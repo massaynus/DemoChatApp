@@ -2,6 +2,7 @@ using System.Runtime.Serialization;
 using AutoMapper;
 using chatAPI.Data;
 using chatAPI.Services;
+using chatAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace chatAPI.Repositories;
@@ -21,7 +22,7 @@ public class UserRepository : IUserRepository
         _crypto = crypto;
     }
 
-    public IQueryable<Models.User> GetUsersByStatus(string status)
+    public IQueryable<User> GetUsersByStatus(string status)
     {
         if (string.IsNullOrWhiteSpace(status))
             return null;
@@ -34,24 +35,24 @@ public class UserRepository : IUserRepository
             .AsSingleQuery();
     }
 
-    public IQueryable<Models.User> GetAll()
+    public IQueryable<User> GetAll()
     {
         return _appDb.Users
                     .Include(u => u.Status)
                     .AsSingleQuery();
     }
 
-    public Models.User GetUserById(Guid id)
+    public User GetUserById(Guid id)
     {
         return _appDb.Users.FirstOrDefault(u => u.ID == id);
     }
 
-    public Models.User CreateUser(Models.User user)
+    public User CreateUser(User user)
     {
         user.LastStatusChange = DateTime.UtcNow;
 
-        user.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Models.Status.DEAFULT_STATUS);
-        user.Role = _appDb.Roles.FirstOrDefault(r => r.RoleName == Models.Role.DEFAULT_ROLE);
+        user.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Status.DEAFULT_STATUS);
+        user.Role = _appDb.Roles.FirstOrDefault(r => r.RoleName == Role.DEFAULT_ROLE);
 
         _appDb.Users.Add(user);
         _appDb.SaveChanges();
@@ -59,7 +60,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public Models.User DeleteUser(Guid id)
+    public User DeleteUser(Guid id)
     {
         // It's said that this is faster than using .Find()
         var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
@@ -73,7 +74,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public Models.User UpdateUser(Guid id, Models.User user)
+    public User UpdateUser(Guid id, User user)
     {
         user.ID = id;
 
@@ -83,7 +84,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public Models.User UpdateUserStatus(Models.User user, Models.Status status)
+    public User UpdateUserStatus(User user, Status status)
     {
         _appDb.Attach(user);
 
@@ -95,7 +96,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public Models.User  UpdateUserStatus(Guid id, string statusName)
+    public User  UpdateUserStatus(Guid id, string statusName)
     {
         var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
         if (user is null) throw new UnknownUserException(id);
