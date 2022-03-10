@@ -32,7 +32,7 @@ public class User
 
     public DateTime DateOfBirht { get; set; }
 
-    public DateTime LastStatusChange { get; set; }
+    public DateTimeOffset LastStatusChange { get; set; }
 
 
     public virtual Role Role { get; set; }

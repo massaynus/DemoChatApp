@@ -2,8 +2,6 @@ namespace chatAPI.DTOs;
 
 public class UserData
 {
-    private DateTime lastStatusChange;
-
     public Guid ID { get; set; }
 
     public string FirstName { get; set; }
@@ -15,9 +13,5 @@ public class UserData
 
     public DateTime DateOfBirht { get; set; }
 
-    public DateTime LastStatusChange
-    {
-        get => lastStatusChange.ToUniversalTime();
-        set => lastStatusChange = value.ToUniversalTime();
-    }
+    public DateTimeOffset LastStatusChange { get; set; }
 }
