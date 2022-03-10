@@ -1,11 +1,11 @@
 import { User } from "./User"
 
 export type Status = {
-    Status: string,
+    status: string,
 }
 
 export type UpdateStatusRequest = {
-    Status: string
+    status: string
 }
 
 export type UpdateStatusResponse = User

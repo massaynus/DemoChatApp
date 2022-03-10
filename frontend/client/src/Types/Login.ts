@@ -1,10 +1,10 @@
 export type LoginRequest = {
-    Username: string,
-    Password: string
+    username: string,
+    password: string
 }
 
 export type LoginResponse = {
-    Username: string,
-    JWTToken: string,
-    OperationResult: 0 | 1
+    username: string,
+    jwtToken: string,
+    operationResult: 0 | 1
 }

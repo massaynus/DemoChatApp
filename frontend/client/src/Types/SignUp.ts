@@ -1,10 +1,10 @@
 export type SignupRequest = {
-    Username: string,
-    Password: string
+    username: string,
+    password: string
 }
 
 export type SignupResponse = {
-    Username: string,
-    Status: string,
-    Message: string
+    username: string,
+    status: string,
+    message: string
 }

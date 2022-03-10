@@ -1,5 +1,5 @@
 export type User = {
-    Username: string,
-    Status: string,
-    LastStatusChange: Date
+    username: string,
+    status: string,
+    lastStatusChange: Date
 }
