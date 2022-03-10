@@ -21,7 +21,7 @@ public class UsersRepository : IUserRepository
         _crypto = crypto;
     }
 
-    public IEnumerable<DTOs.User> GetUsersByStatus(string status)
+    public IQueryable<Models.User> GetUsersByStatus(string status)
     {
         if (string.IsNullOrWhiteSpace(status))
             return null;
@@ -31,44 +31,35 @@ public class UsersRepository : IUserRepository
         return _appDb.Users
             .Where(u => u.Status.NormalizedStatusName == normalizedStatus)
             .Include(u => u.Status)
-            .AsSingleQuery()
-            .Select(u => _mapper.Map<DTOs.User>(u))
-            .AsEnumerable();
+            .AsSingleQuery();
     }
 
-    public IEnumerable<DTOs.User> GetAll()
+    public IQueryable<Models.User> GetAll()
     {
         return _appDb.Users
                     .Include(u => u.Status)
-                    .AsSingleQuery()
-                    .Select(u => _mapper.Map<DTOs.User>(u))
-                    .AsEnumerable();
+                    .AsSingleQuery();
     }
 
-    public DTOs.User GetUserById(Guid id)
+    public Models.User GetUserById(Guid id)
     {
-        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
-        if (user is not null) return _mapper.Map<DTOs.User>(user);
-        else return null;
+        return _appDb.Users.FirstOrDefault(u => u.ID == id);
     }
 
-    public DTOs.User CreateUser(DTOs.UserSignUpRequest user)
+    public Models.User CreateUser(Models.User user)
     {
-        Models.User newUser = _mapper.Map<Models.User>(user);
+        user.LastStatusChange = DateTime.UtcNow;
 
-        newUser.Password = _crypto.Hash(user.Password);
-        newUser.LastStatusChange = DateTime.UtcNow;
+        user.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Models.Status.DEAFULT_STATUS);
+        user.Role = _appDb.Roles.FirstOrDefault(r => r.RoleName == Models.Role.DEFAULT_ROLE);
 
-        newUser.Status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == Models.Status.DEAFULT_STATUS);
-        newUser.Role = _appDb.Roles.FirstOrDefault(r => r.RoleName == Models.Role.DEFAULT_ROLE);
-
-        _appDb.Users.Add(newUser);
+        _appDb.Users.Add(user);
         _appDb.SaveChanges();
 
-        return _mapper.Map<DTOs.User>(newUser);
+        return user;
     }
 
-    public DTOs.User DeleteUser(Guid id)
+    public Models.User DeleteUser(Guid id)
     {
         // It's said that this is faster than using .Find()
         var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
@@ -79,31 +70,32 @@ public class UsersRepository : IUserRepository
             _appDb.SaveChanges();
         }
 
-        return _mapper.Map<DTOs.User>(user);
+        return user;
     }
 
-    public DTOs.User UpdateUser(Guid id, DTOs.User user)
+    public Models.User UpdateUser(Guid id, Models.User user)
     {
-        Models.User newUser = _mapper.Map<Models.User>(user);
-        newUser.ID = id;
+        user.ID = id;
 
-        _appDb.Users.Attach(newUser);
+        _appDb.Users.Attach(user);
         _appDb.SaveChanges();
 
-        return _mapper.Map<DTOs.User>(newUser);
+        return user;
     }
 
-    public DTOs.User UpdateUserStatus(Models.User user, Models.Status status)
+    public Models.User UpdateUserStatus(Models.User user, Models.Status status)
     {
+        _appDb.Attach(user);
+
         user.Status = status;
         user.LastStatusChange = DateTime.UtcNow;
 
         _appDb.SaveChanges();
 
-        return _mapper.Map<DTOs.User>(user);
+        return user;
     }
 
-    public DTOs.User  UpdateUserStatus(Guid id, string statusName)
+    public Models.User  UpdateUserStatus(Guid id, string statusName)
     {
         var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
         if (user is null) throw new UnknownUserException(id);

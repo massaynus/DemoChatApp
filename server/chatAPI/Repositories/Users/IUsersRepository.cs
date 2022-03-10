@@ -5,15 +5,16 @@ namespace chatAPI.Repositories;
 
 public interface IUserRepository : IDisposable
 {
-    IEnumerable<DTOs.User> GetAll();
-    IEnumerable<DTOs.User> GetUsersByStatus(string status);
-    DTOs.User GetUserById(Guid id);
+    IQueryable<Models.User> GetAll();
+    IQueryable<Models.User> GetUsersByStatus(string status);
 
-    DTOs.User CreateUser(DTOs.UserSignUpRequest user);
+    Models.User GetUserById(Guid id);
 
-    DTOs.User UpdateUser(Guid id, DTOs.User user);
-    DTOs.User UpdateUserStatus(Models.User user, Models.Status status);
-    DTOs.User UpdateUserStatus(Guid id, string status);
+    Models.User CreateUser(Models.User user);
 
-    DTOs.User DeleteUser(Guid id);
+    Models.User UpdateUser(Guid id, Models.User user);
+    Models.User UpdateUserStatus(Models.User user, Models.Status status);
+    Models.User UpdateUserStatus(Guid id, string status);
+
+    Models.User DeleteUser(Guid id);
 }
