@@ -1,6 +1,8 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil';
+import { UserAtom } from '../Lib/Atoms';
 import { User } from '../Types/User'
 
 const columns = [
@@ -15,13 +17,16 @@ export default function Users({ users }: {
     users: User[]
 }) {
 
+    const user = useRecoilValue(UserAtom)
     const [now, setNow] = useState(Date.now())
 
     useEffect(() => {
         setInterval(() => setNow(Date.now()), 1000)
     }, [users])
 
-    const rows = users.map(user => {
+    const rows = users
+    .filter(u => u.username !== user.username)
+    .map(user => {
         return {
             ...user,
             elapsed: dayjs(now).diff(user.lastStatusChange),
@@ -50,7 +55,7 @@ export default function Users({ users }: {
     ))
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={8}>
             <TableContainer sx={{ maxHeight: 440 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>

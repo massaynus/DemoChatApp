@@ -7,8 +7,8 @@ import { User } from "../Types/User";
 import StatusHubClient from '../Lib/StatusHub'
 import Statuses from "./Statuses";
 import Users from "./Users";
-import { Button } from "@mui/material";
-
+import { Button, Fade, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 
 function Home() {
 
@@ -60,9 +60,13 @@ function Home() {
 
   return (
     <>
-      <h1>hello {user.username} with status {user.status} changed at {user.lastStatusChange} </h1>
-      <Button onClick={signOutHandler} variant='outlined' color="secondary">SignOut</Button>
-      <Statuses statuses={statuses} />
+      <Typography component="h1" variant="h3">Greetings {user.username}!</Typography>
+      <Stack direction='row' spacing={2} justifyContent='space-around'>
+        <Stack direction='row' spacing={2}>
+          <Statuses statuses={statuses} />
+        </Stack>
+        <Button onClick={signOutHandler} variant='outlined' color="secondary">SignOut</Button>
+      </Stack>
       <Users users={users} />
     </>
   );
