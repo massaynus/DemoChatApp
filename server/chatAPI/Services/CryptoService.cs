@@ -3,6 +3,9 @@ using System.Text;
 
 namespace chatAPI.Services;
 
+/// <summary>
+/// Handles everything password/encryption related in the app
+/// </summary>
 public class CryptoService
 {
     private class HashInfo
@@ -28,6 +31,13 @@ public class CryptoService
         _logger = logger;
     }
 
+    /// <summary>
+    /// Hash a password
+    /// </summary>
+    /// <param name="password">the password to be hashed</param>
+    /// <param name="iterations">itteration for KD operation</param>
+    /// <param name="hashAlgorithmName">the hashing algorithm to be used</param>
+    /// <returns>string</returns>
     public string Hash(string password, int iterations = ITTERATIONS, string hashAlgorithmName = HASH_ALGO)
     {
         // Create salt
@@ -49,6 +59,12 @@ public class CryptoService
         return $"{hashAlgorithmName}${iterations}${base64Hash}";
     }
 
+    /// <summary>
+    /// Verifies if a hash and a password match or not
+    /// </summary>
+    /// <param name="base64Hash">the hashto be challenged</param>
+    /// <param name="password">the challenging string</param>
+    /// <returns></returns>
     public bool Verify(string base64Hash, string password)
     {
         // Get the original hash's informations

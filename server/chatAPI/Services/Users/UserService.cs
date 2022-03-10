@@ -65,13 +65,6 @@ public class UserService : IUserService
         );
     }
 
-    public UserData UpdateUserStatus(User user, Status status)
-    {
-        return _mapper.Map<UserData>(
-            _usersRepository.UpdateUserStatus(user, status)
-        );
-    }
-
     public UserData UpdateUserStatus(Guid id, string statusName)
     {
         return _mapper.Map<UserData>(

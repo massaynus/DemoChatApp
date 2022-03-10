@@ -84,8 +84,14 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public User UpdateUserStatus(User user, Status status)
+    public User UpdateUserStatus(Guid id, string statusName)
     {
+        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
+        if (user is null) throw new UnknownUserException(id);
+
+        var status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == statusName.ToUpperInvariant());
+        if (status is null) throw new InvalidStatusException(statusName);
+
         _appDb.Attach(user);
 
         user.Status = status;
@@ -94,17 +100,6 @@ public class UserRepository : IUserRepository
         _appDb.SaveChanges();
 
         return user;
-    }
-
-    public User  UpdateUserStatus(Guid id, string statusName)
-    {
-        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
-        if (user is null) throw new UnknownUserException(id);
-
-        var status = _appDb.Statuses.FirstOrDefault(s => s.NormalizedStatusName == statusName.ToUpperInvariant());
-        if (status is null) throw new InvalidStatusException(statusName);
-
-        return UpdateUserStatus(user, status);
     }
 
     protected virtual void Dispose(bool disposing)
@@ -126,27 +121,28 @@ public class UserRepository : IUserRepository
         GC.SuppressFinalize(this);
     }
 
-    [Serializable]
-    private class InvalidStatusException : Exception
+}
+
+[Serializable]
+public class InvalidStatusException : Exception
+{
+    public InvalidStatusException(string status) : base($"Invalid status supplied: {status}")
     {
-        public InvalidStatusException(string status) : base($"Invalid status supplied: {status}")
-        {
-        }
+    }
+}
+
+[Serializable]
+public class UnknownUserException : Exception
+{
+    public UnknownUserException()
+    {
     }
 
-    [Serializable]
-    private class UnknownUserException : Exception
+    public UnknownUserException(Guid id) : this(id.ToString())
     {
-        public UnknownUserException()
-        {
-        }
+    }
 
-        public UnknownUserException(Guid id) : this(id.ToString())
-        {
-        }
-
-        public UnknownUserException(string usernameOrId) : base($"Unknown user queried: {usernameOrId}")
-        {
-        }
+    public UnknownUserException(string usernameOrId) : base($"Unknown user queried: {usernameOrId}")
+    {
     }
 }
