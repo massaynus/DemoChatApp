@@ -37,6 +37,7 @@ public class UserService : IUserService
     {
         return _mapper.ProjectTo<UserData>(
             _usersRepository.GetAll()
+                .OrderByDescending(u => u.Username)
                 .Skip(page * pageSize)
                 .Take(pageSize)
         );
