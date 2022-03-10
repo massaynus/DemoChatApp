@@ -36,7 +36,7 @@ public class User
     public virtual DateTime LastStatusChange
     {
         get => lastStatusChange.ToUniversalTime();
-        set => lastStatusChange = value;
+        set => lastStatusChange = value.ToUniversalTime();
     }
 
 
