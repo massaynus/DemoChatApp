@@ -67,7 +67,8 @@ Services.AddCors(opt =>
         policy => policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyOrigin()));
+            .SetIsOriginAllowed(host => true)
+            .AllowCredentials()));
 
 Services.AddSignalR();
 Services.AddControllers();
