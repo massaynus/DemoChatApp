@@ -33,6 +33,10 @@ export default function SignIn() {
     });
 
     if (response.operationResult === 0) {
+
+      window.sessionStorage.setItem('token', response.jwtToken)
+      window.sessionStorage.setItem('username', response.username)
+
       setvalidationText('')
       setJwt(response.jwtToken)
       setUser(response.user)
@@ -78,7 +82,7 @@ export default function SignIn() {
           label="Password"
           type="password"
           id="password"
-          autoComplete="current-password"
+          autoComplete="password"
         />
         <Button
           type="submit"

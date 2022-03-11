@@ -32,9 +32,6 @@ export default class ApiClient {
             return result
 
         console.debug(result)
-        window.sessionStorage.setItem('token', result.jwtToken)
-        window.sessionStorage.setItem('username', result.username)
-
         this.headers['Authorization'] = `Bearer ${result.jwtToken}`
 
         return result
