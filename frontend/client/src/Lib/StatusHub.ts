@@ -22,9 +22,5 @@ export default async function getConnection(host: string = 'http://localhost:500
 
     await connection.start()
 
-    connection.onclose((error) => {
-        connection = null
-    })
-
     return connection
 }
