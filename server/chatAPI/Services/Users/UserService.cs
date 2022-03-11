@@ -27,12 +27,12 @@ public class UserService : IUserService
 
     public UserDataList GetOnlineUsers()
     {
-        var ids = _statusService.GetOnlineUsersIDs();
+        var ids = _statusService.GetOnlineUsersIDs().ToArray();
 
         return new UserDataList()
         {
             page = 0,
-            total = _usersRepository.GetAll().Where(u => ids.Any(id => u.ID == id)).Count(),
+            total = _usersRepository.GetAll().Where(u => ids.Contains(u.ID)).Count(),
             Users = _mapper.ProjectTo<UserData>(
                 _usersRepository.GetAll()
                 .Where(u => ids.Any(id => u.ID == id)))
