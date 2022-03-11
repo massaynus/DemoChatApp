@@ -41,7 +41,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("/api/[controller]/GetUsers/{page=0}", Name = "GetUsers")]
-    public IEnumerable<UserData> GetAll([FromRoute] int page)
+    public UserDataList GetAll([FromRoute] int page)
     {
         return _userService.GetAll(page);
     }
@@ -52,13 +52,36 @@ public class UsersController : ControllerBase
         return _db.Statuses.AsEnumerable();
     }
 
-    [HttpGet("/api/[controller]/GetUsersByStatus/{status}", Name = "GetUsersByStatus")]
-    public IEnumerable<UserData> GetByStatus([FromRoute] string status)
+    [HttpGet("/api/[controller]/GetUsersByStatus/{status}/{page=0}", Name = "GetUsersByStatus")]
+    public UserDataList GetByStatus([FromRoute] string status, [FromRoute] int page)
     {
-        return _userService.GetUsersByStatus(status);
+        return _userService.GetUsersByStatus(status, page);
     }
 
-    [HttpPost("/api/[controller]/ChangeUserStatus", Name = "ChangeUserStatus")]
+    [HttpPost("/api/[controller]/CreateStatus", Name = "CreateStatus")]
+    public async Task<Status> CreateStatus([FromBody] Status status)
+    {
+        if (string.IsNullOrWhiteSpace(status.StatusName))
+        {
+            Response.StatusCode = StatusCodes.Status400BadRequest;
+            return null;
+        }
+
+        if (_db.Statuses.Any(s => s.NormalizedStatusName == status.NormalizedStatusName))
+        {
+            Response.StatusCode = StatusCodes.Status409Conflict;
+            return null;
+        }
+
+        _db.Statuses.Add(status);
+        _db.SaveChanges();
+
+        await _statusHub.Clients.All.SendAsync("StatusAdded", status);
+
+        return status;
+    }
+
+    [HttpPut("/api/[controller]/ChangeUserStatus", Name = "ChangeUserStatus")]
     public async Task<UserStatusChangeResponse> UpdateStatus(UserStatusChangeRequest request)
     {
         var userId = _jwtService.GetPPID(HttpContext.User.Claims);
@@ -68,6 +91,5 @@ public class UsersController : ControllerBase
 
         return _mapper.Map<UserStatusChangeResponse>(result);
     }
-
 
 }
