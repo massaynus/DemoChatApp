@@ -9,6 +9,12 @@ public interface IUserService : IDisposable
     /// Get all users
     /// </summary>
     /// <returns>IEnumerable<User></returns>
+    UserDataList GetOnlineUsers();
+
+    /// <summary>
+    /// Get all users
+    /// </summary>
+    /// <returns>IEnumerable<User></returns>
     UserDataList GetAll(int page);
 
     /// <summary>

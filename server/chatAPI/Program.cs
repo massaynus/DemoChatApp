@@ -82,6 +82,7 @@ Services.AddTransient<IAuthService, AuthService>();
 Services.AddTransient<IUserService, UserService>();
 Services.AddSingleton<CryptoService>();
 Services.AddSingleton<JwtService>();
+Services.AddSingleton<StatusService>();
 
 // MVC Stuff
 Services.AddCors(opt =>

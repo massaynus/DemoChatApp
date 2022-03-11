@@ -15,12 +15,28 @@ public class UserService : IUserService
 
     private readonly IMapper _mapper;
     private readonly IUserRepository _usersRepository;
+    private readonly StatusService _statusService;
 
-    public UserService(IMapper mapper, CryptoService crypto, IUserRepository usersRepository)
+    public UserService(IMapper mapper, CryptoService crypto, IUserRepository usersRepository, StatusService statusService)
     {
         _mapper = mapper;
         _crypto = crypto;
         _usersRepository = usersRepository;
+        _statusService = statusService;
+    }
+
+    public UserDataList GetOnlineUsers()
+    {
+        var ids = _statusService.GetOnlineUsersIDs();
+
+        return new UserDataList()
+        {
+            page = 0,
+            total = _usersRepository.GetAll().Where(u => ids.Any(id => u.ID == id)).Count(),
+            Users = _mapper.ProjectTo<UserData>(
+                _usersRepository.GetAll()
+                .Where(u => ids.Any(id => u.ID == id)))
+        };
     }
 
     public UserDataList GetUsersByStatus(string status, int page, int pageSize)
