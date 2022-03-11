@@ -80,7 +80,19 @@ public class AuthService : IAuthService
     public UserData ChangePassword(Guid id, string oldPassword, string newPassword)
     {
         // I think this is beyond scope 😅
-        throw new NotImplementedException();
+        // Meh imma implement it anyways 	<(^_^)>
+
+        var user = _appDb.Users.FirstOrDefault(u => u.ID == id);
+        if (user is null) return null;
+
+        var authResult = Authenticate(user.Password, oldPassword);
+        if (authResult.OperationResult == UserLoginOperationResult.failure)
+            return null;
+
+        user.Password = _crypto.Hash(newPassword);
+        _appDb.SaveChanges();
+
+        return _mapper.Map<UserData>(user);
     }
 
     protected virtual void Dispose(bool disposing)

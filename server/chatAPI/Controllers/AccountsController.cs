@@ -71,4 +71,17 @@ public class AccountsController : ControllerBase
         await _statusHub.Clients.All.SendAsync("UserLoggedIn", result.User);
         return result;
     }
+
+    [HttpPut("/ChangePassword", Name = "ChangePassword")]
+    public UserData ChangePassword(ChangePasswordRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.OldPassword) ||
+            string.IsNullOrWhiteSpace(request.NewPassword))
+        {
+            Response.StatusCode = StatusCodes.Status400BadRequest;
+            return null;
+        }
+
+        return _authService.ChangePassword(request.ID, request.OldPassword, request.NewPassword);
+    }
 }
