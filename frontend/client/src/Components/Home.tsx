@@ -11,6 +11,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useSnackbar } from "notistack";
 import { Status } from "../Types/Status";
 import _ from 'lodash'
+import { HubConnection } from "@microsoft/signalr";
 
 function Home() {
 
@@ -23,6 +24,7 @@ function Home() {
 
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = React.useState(false);
   const [createStatusTxt, setCeateStatusTxt] = React.useState('');
+  const [connection, setConnection] = React.useState<HubConnection | null>(null);
 
   const handleClickOpen = () => {
     setIsCreateStatusModalOpen(true);
@@ -64,8 +66,8 @@ function Home() {
     setUsers(users)
     setUser(user => users.users.find(u => u.username === user.username) || user)
 
-    const connection = await StatusHubClient(process.env.REACT_APP_API_BASE_URL)
-    connection.on("StatusChange", (changedUser: User) => {
+    const newConnection = await StatusHubClient(process.env.REACT_APP_API_BASE_URL)
+    newConnection.on("StatusChange", (changedUser: User) => {
       setUsers(usersList => {
         const users = usersList.users
         const newUsers = Array.from(users)
@@ -88,7 +90,7 @@ function Home() {
       }
     });
 
-    connection.on("StatusAdded", (status: Status) => {
+    newConnection.on("StatusAdded", (status: Status) => {
       enqueueSnackbar(
         `New Status added ${status.statusName}!`,
         { variant: 'info' }
@@ -97,19 +99,42 @@ function Home() {
       setStatuses(sts => _.uniqBy([...sts, status], s => s.statusName))
     });
 
-    connection.on("UserLoggedIn", (newUser: User) => {
+    newConnection.on("UserLoggedIn", async (newUser: User) => {
       enqueueSnackbar(
         newUser.username === user.username
           ? `Welcomeback ${user.username}!!`
           : `User ${newUser.username} Logged In!`,
         { variant: 'info', preventDuplicate: true }
       )
+
+      const users = await ApiClientInstance.getUsers()
+      setUsers(users)
     });
+
+    newConnection.on("UserSignOff", async (id: string) => {
+
+      const user = users.users.find(u => u.id === id)
+
+      if (user) {
+        enqueueSnackbar(
+          `User ${user.username} Signed Off!`,
+          { variant: 'info', preventDuplicate: true }
+        )
+      }
+
+      const onlineUsers = await ApiClientInstance.getUsers()
+      setUsers(onlineUsers)
+    });
+
+    setConnection(newConnection)
+
   }
 
-  const signOutHandler = () => {
+  const signOutHandler = async () => {
     window.sessionStorage.removeItem('token')
     setJwt('')
+    await connection?.stop()
+    setConnection(null)
     navigate('/login')
   }
 
