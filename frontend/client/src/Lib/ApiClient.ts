@@ -2,7 +2,7 @@ import axios, { Axios, AxiosRequestHeaders, AxiosResponse } from "axios";
 import { LoginRequest, LoginResponse } from "../Types/Login";
 import { SignupRequest, SignupResponse } from "../Types/SignUp";
 import { Status, UpdateStatusRequest, UpdateStatusResponse } from "../Types/Status";
-import { User } from "../Types/User";
+import { UserList } from "../Types/User";
 
 export default class ApiClient {
     private headers: AxiosRequestHeaders;
@@ -45,12 +45,12 @@ export default class ApiClient {
         return this.validateReponse(response)
     }
 
-    async getUsers(page: number = 0): Promise<User[]> {
+    async getUsers(page: number = 0): Promise<UserList> {
         const response = await this.axios.get(`/api/Users/GetUsers/${page}`)
         return this.validateReponse(response)
     }
 
-    async getUserByStatus(status: string): Promise<User[]> {
+    async getUserByStatus(status: string): Promise<UserList> {
         const response = await this.axios.get(`/api/Users/GetUsersByStatus/${status}`)
         return this.validateReponse(response)
     }
@@ -61,7 +61,7 @@ export default class ApiClient {
     }
 
     async updateStatus(request: UpdateStatusRequest): Promise<UpdateStatusResponse> {
-        const response = await this.axios.post('/api/Users/ChangeUserStatus', JSON.stringify(request))
+        const response = await this.axios.put('/api/Users/ChangeUserStatus', JSON.stringify(request))
         return this.validateReponse(response)
     }
 

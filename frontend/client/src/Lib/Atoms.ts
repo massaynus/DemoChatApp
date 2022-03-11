@@ -1,25 +1,25 @@
 import { atom, RecoilState } from "recoil";
 import { Status } from "../Types/Status";
-import { User } from "../Types/User";
+import { User, UserList } from "../Types/User";
 
-export const JWTAtom : RecoilState<string | null> = atom({
+export const JWTAtom: RecoilState<string | null> = atom({
     key: 'token',
     default: window.sessionStorage.getItem('token')
 })
 
-export const UserAtom : RecoilState<User> = atom({
+export const UserAtom: RecoilState<User> = atom({
     key: 'user',
     default: {
         username: window.sessionStorage.getItem('username')
     } as User
 })
 
-export const UsersAtom : RecoilState<User[]> = atom({
+export const UsersAtom: RecoilState<UserList> = atom({
     key: 'users',
-    default: [] as User[]
+    default: { users: [] as User[] } as UserList
 })
 
-export const StatusesAtom : RecoilState<Status[]> = atom({
+export const StatusesAtom: RecoilState<Status[]> = atom({
     key: 'statuses',
     default: [] as Status[]
 })

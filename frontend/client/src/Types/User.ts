@@ -5,3 +5,9 @@ export type User = {
     lastStatusChange: string,
     elapsed: number,
 }
+
+export type UserList = {
+    total: number,
+    page: number,
+    users: User[]
+}
