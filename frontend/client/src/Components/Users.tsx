@@ -6,11 +6,11 @@ import { UserAtom } from '../Lib/Atoms';
 import { User } from '../Types/User'
 
 const columns = [
-    { id: 'id', label: 'id', minWidth: 100 },
-    { id: 'username', label: 'username', minWidth: 100 },
-    { id: 'status', label: 'status', minWidth: 100 },
-    { id: 'lastStatusChange', label: 'last status change', minWidth: 100 },
-    { id: 'elapsed', label: 'elapsed time', minWidth: 100 },
+    { id: 'id', label: 'User ID', minWidth: 100 },
+    { id: 'username', label: 'Username', minWidth: 100 },
+    { id: 'status', label: 'Status', minWidth: 100 },
+    { id: 'lastStatusChange', label: 'Last Status Change', minWidth: 100 },
+    { id: 'elapsed', label: 'Elapsed Time', minWidth: 100 },
 ]
 
 export default function Users({ users }: {
