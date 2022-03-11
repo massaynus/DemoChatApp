@@ -9,6 +9,8 @@ import Statuses from "./Statuses";
 import Users from "./Users";
 import { Button, Stack, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
+import { Status } from "../Types/Status";
+import _ from 'lodash'
 
 function Home() {
 
@@ -22,29 +24,58 @@ function Home() {
   let navigate = useNavigate()
 
   const initialLoad = async () => {
-    setJwt(sessionStorage.getItem('token'))
-    setStatuses(await ApiClientInstance.getStatuses())
+    try {
+      setJwt(sessionStorage.getItem('token'))
+      setStatuses(await ApiClientInstance.getStatuses())
+    } finally {
+      if (!jwt) {
+        navigate('/login')
+        return
+      }
+    }
 
     const users = await ApiClientInstance.getUsers()
     setUsers(users)
-    setUser(user => users.find(u => u.username === user.username) || user)
+    setUser(user => users.users.find(u => u.username === user.username) || user)
 
     const connection = await StatusHubClient(process.env.REACT_APP_API_BASE_URL)
     connection.on("StatusChange", (changedUser: User) => {
-      enqueueSnackbar(
-        `User ${changedUser.username} changed their status to ${changedUser.status}`
-      )
-
-      setUsers(users => {
+      setUsers(usersList => {
+        const users = usersList.users
         const newUsers = Array.from(users)
         const idx = newUsers.findIndex(u => u.id === changedUser.id)
         newUsers[idx] = changedUser
-        return newUsers
+
+        return { ...usersList, users: newUsers }
       })
 
       // Relying on the username here is find since its unique in the backend
-      if (user.username === changedUser.username)
+      if (user.username === changedUser.username) {
         setUser(changedUser)
+        enqueueSnackbar(
+          `Status changed to ${changedUser.status} successfuly!`
+        )
+      } else {
+        enqueueSnackbar(
+          `User ${changedUser.username} changed their status to ${changedUser.status}`
+        )
+      }
+    });
+
+    connection.on("StatusAdded", (status: Status) => {
+      enqueueSnackbar(
+        `New Status added ${status.statusName}!`,
+        { variant: 'info' }
+      )
+
+      setStatuses(sts => _.uniqBy([...sts, status], s => s.statusName))
+    });
+
+    connection.on("UserLoggedIn", (newUser: User) => {
+      enqueueSnackbar(
+        `User ${newUser.username} Logged In!`,
+        { variant: 'info' }
+      )
     });
   }
 
@@ -55,10 +86,6 @@ function Home() {
   }
 
   React.useEffect(() => {
-    if (!jwt) {
-      navigate('/login')
-    }
-
     initialLoad()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,7 +100,7 @@ function Home() {
         </Stack>
         <Button onClick={signOutHandler} variant='outlined' color="secondary">SignOut</Button>
       </Stack>
-      <Users users={users} />
+      <Users users={users.users} />
     </>
   );
 }

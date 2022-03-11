@@ -35,7 +35,7 @@ export default function SignIn() {
     if (response.operationResult === 0) {
       setvalidationText('')
       setJwt(response.jwtToken)
-      setUser((old) => ({ ...old, username: response.username }))
+      setUser(response.user)
       navigate('/')
     }
     else setvalidationText('Incorrect username or password')
