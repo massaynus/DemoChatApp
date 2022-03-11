@@ -3,6 +3,8 @@ using chatAPI.DTOs;
 using chatAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.SignalR;
+using chatAPI.Hubs;
 
 namespace chatAPI.Controllers;
 
@@ -12,6 +14,7 @@ public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
     private readonly IMapper _mapper;
+    private readonly IHubContext<StatusHub> _statusHub;
 
     private readonly ApplicationDbContext _db;
     private readonly IUserService _userService;
@@ -27,7 +30,8 @@ public class AccountsController : ControllerBase
         JwtService jwtService,
         IMapper mapper,
         IUserService userService,
-        IAuthService authService)
+        IAuthService authService,
+        IHubContext<StatusHub> statusHub)
     {
         _logger = logger;
         _db = db;
@@ -36,10 +40,11 @@ public class AccountsController : ControllerBase
         _mapper = mapper;
         _userService = userService;
         _authService = authService;
+        _statusHub = statusHub;
     }
 
     [HttpPost("/SignUp", Name = "SignUp")]
-    public UserSignUpResponse SignUp(UserSignUpRequest userSignUpRequest)
+    public async Task<UserSignUpResponse> SignUp(UserSignUpRequest userSignUpRequest)
     {
         if (_db.Users.Any(u => u.Username == userSignUpRequest.Username))
         {
@@ -52,12 +57,16 @@ public class AccountsController : ControllerBase
 
         var result = _userService.CreateUser(userSignUpRequest);
         Response.StatusCode = StatusCodes.Status201Created;
+
+        await _statusHub.Clients.All.SendAsync("UserCreated", result);
         return _mapper.Map<UserSignUpResponse>(result);
     }
 
     [HttpPost("/SignIn", Name = "SignIn")]
-    public UserLoginResponse SignIn(UserLoginRequest userLoginRequest)
+    public async Task<UserLoginResponse> SignIn(UserLoginRequest userLoginRequest)
     {
-        return _authService.Authenticate(userLoginRequest);
+        var result = _authService.Authenticate(userLoginRequest);
+        await _statusHub.Clients.All.SendAsync("UserLoggedIn", result.User);
+        return result;
     }
 }
