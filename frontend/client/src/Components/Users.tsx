@@ -55,7 +55,7 @@ export default function Users({ users }: {
     ))
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={8}>
+        <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={12}>
             <TableContainer sx={{ maxHeight: 440 }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>

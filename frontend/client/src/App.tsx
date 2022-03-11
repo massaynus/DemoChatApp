@@ -20,6 +20,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider
         variant='success'
+        preventDuplicate={true}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',

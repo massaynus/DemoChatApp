@@ -23,6 +23,7 @@ export default function Statuses({statuses}: {
             key={status.statusName}
             variant={status.statusName === currentStatus ? 'contained' : 'outlined'}
             color={status.statusName === currentStatus ? 'warning' : 'info'}
+            disabled={status.statusName === currentStatus}
             onClick={() => updateStatus(status.statusName)}
           >
             {status.statusName}

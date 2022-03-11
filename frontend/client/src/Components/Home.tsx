@@ -66,8 +66,8 @@ function Home() {
 
   return (
     <>
-      <Typography component="h1" variant="h3">Greetings {user.username}!</Typography>
-      <Stack direction='row' spacing={2} justifyContent='space-around'>
+      <Typography component="h1" variant="h3" marginY={5}>Greetings {user.username}!</Typography>
+      <Stack direction='row' spacing={2} justifyContent='space-between' marginY={5}>
         <Stack direction='row' spacing={2}>
           <Statuses statuses={statuses} />
         </Stack>
