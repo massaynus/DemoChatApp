@@ -13,10 +13,11 @@ public class StatusHub : Hub
     private readonly StatusService _status;
     private readonly JwtService _jwt;
 
-    public StatusHub(ApplicationDbContext db, StatusService status)
+    public StatusHub(ApplicationDbContext db, StatusService status, JwtService jwt)
     {
         _db = db;
         _status = status;
+        _jwt = jwt;
     }
 
     public override Task OnConnectedAsync()
