@@ -11,6 +11,7 @@ const columns = [
     { id: 'status', label: 'Status', minWidth: 100 },
     { id: 'lastStatusChange', label: 'Last Status Change', minWidth: 100 },
     { id: 'elapsed', label: 'Elapsed Time', minWidth: 100 },
+    { id: 'online', label: 'Is Online', minWidth: 100 },
 ]
 
 export default function Users({ users }: {
@@ -50,6 +51,9 @@ export default function Users({ users }: {
             </TableCell>
             <TableCell key={'elapsed'} align={'center'}>
                 {dayjs(rowData.elapsed).format('HH:mm:ss')}
+            </TableCell>
+            <TableCell key={'online'} align={'center'}>
+                {rowData.isOnline === null ? "Offline" : "Online"}
             </TableCell>
         </TableRow>
     ))

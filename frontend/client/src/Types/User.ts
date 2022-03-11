@@ -4,6 +4,7 @@ export type User = {
     status: string,
     lastStatusChange: string,
     elapsed: number,
+    isOnline: boolean | null,
 }
 
 export type UserList = {
