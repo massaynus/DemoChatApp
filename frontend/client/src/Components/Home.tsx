@@ -11,7 +11,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useSnackbar } from "notistack";
 import { Status } from "../Types/Status";
 import _ from 'lodash'
-import { HubConnection } from "@microsoft/signalr";
 
 function Home() {
 
@@ -61,7 +60,7 @@ function Home() {
       }
     }
 
-    const users = await ApiClientInstance.getOnlineUsers()
+    const users = await ApiClientInstance.getUsers()
     setUsers(users)
     setUser(user => users.users.find(u => u.username === user.username) || user)
 
@@ -106,7 +105,7 @@ function Home() {
         { variant: 'info', preventDuplicate: true }
       )
 
-      const users = await ApiClientInstance.getOnlineUsers()
+      const users = await ApiClientInstance.getUsers()
       setUsers(users)
     });
 
@@ -121,7 +120,7 @@ function Home() {
         )
       }
 
-      const onlineUsers = await ApiClientInstance.getOnlineUsers()
+      const onlineUsers = await ApiClientInstance.getUsers()
       setUsers(onlineUsers)
     });
 
