@@ -7,7 +7,7 @@ import { User } from "../Types/User";
 import StatusHubClient from '../Lib/StatusHub'
 import Statuses from "./Statuses";
 import Users from "./Users";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, TextField, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { Status } from "../Types/Status";
 import _ from 'lodash'
@@ -20,6 +20,32 @@ function Home() {
   const [user, setUser] = useRecoilState(UserAtom)
   const [users, setUsers] = useRecoilState(UsersAtom)
   const [statuses, setStatuses] = useRecoilState(StatusesAtom)
+
+  const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = React.useState(false);
+  const [createStatusTxt, setCeateStatusTxt] = React.useState('');
+
+  const handleClickOpen = () => {
+    setIsCreateStatusModalOpen(true);
+    setCeateStatusTxt('')
+  };
+
+  const handleClose = () => {
+    setIsCreateStatusModalOpen(false);
+    setCeateStatusTxt('')
+  };
+
+  const handleCreate = async () => {
+    try {
+      await ApiClientInstance.createStatus({ statusName: createStatusTxt })
+    } catch (error) {
+      enqueueSnackbar(
+        `Unfortunately the new status ${createStatusTxt} was not created!`,
+        { variant: 'error' }
+      )
+    } finally {
+      handleClose()
+    }
+  }
 
   let navigate = useNavigate()
 
@@ -100,9 +126,35 @@ function Home() {
         <Stack direction='row' spacing={2}>
           <Statuses statuses={statuses} />
         </Stack>
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Create new status
+        </Button>
         <Button onClick={signOutHandler} variant='outlined' color="secondary">SignOut</Button>
       </Stack>
       <Users users={users.users} />
+
+      <Dialog open={isCreateStatusModalOpen} onClose={handleClose}>
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter the status name you want to create
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="statusName"
+            label="Statue Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setCeateStatusTxt(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCreate}>Create</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

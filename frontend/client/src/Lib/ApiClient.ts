@@ -57,6 +57,11 @@ export default class ApiClient {
         return this.validateReponse(response)
     }
 
+    async createStatus(status: Status): Promise<Status> {
+        const response = await this.axios.post('/api/Users/CreateStatus', JSON.stringify(status))
+        return this.validateReponse(response)
+    }
+
     async updateStatus(request: UpdateStatusRequest): Promise<UpdateStatusResponse> {
         const response = await this.axios.put('/api/Users/ChangeUserStatus', JSON.stringify(request))
         return this.validateReponse(response)
