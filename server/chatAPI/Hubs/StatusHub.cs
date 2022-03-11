@@ -12,9 +12,9 @@ public class StatusHub : Hub
     private readonly ApplicationDbContext _db;
     private readonly StatusService _status;
     private readonly JwtService _jwt;
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public StatusHub(ApplicationDbContext db, StatusService status, JwtService jwt, UserService userService)
+    public StatusHub(ApplicationDbContext db, StatusService status, JwtService jwt, IUserService userService)
     {
         _db = db;
         _status = status;
