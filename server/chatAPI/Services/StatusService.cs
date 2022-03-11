@@ -32,7 +32,9 @@ public class StatusService
 
     public bool IsUserOnline(Guid id)
     {
-        return _onlineUsers.Contains(id);
+        var status = _onlineUsers.Contains(id);
+        _logger.LogInformation($"User {id.ToString()} is {status}");
+        return status;
     }
 
     public IEnumerable<Guid> GetOnlineUsersIDs()
