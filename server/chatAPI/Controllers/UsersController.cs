@@ -46,6 +46,12 @@ public class UsersController : ControllerBase
         return _userService.GetAll(page);
     }
 
+    [HttpGet("/api/[controller]/GetOnlineUsers", Name = "GetOnlineUsers")]
+    public UserDataList GetOnlineUsers()
+    {
+        return _userService.GetOnlineUsers();
+    }
+
     [HttpGet("/api/[controller]/Statuses", Name = "Statuses")]
     public IEnumerable<Status> GetStatuses()
     {
