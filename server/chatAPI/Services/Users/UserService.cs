@@ -66,9 +66,7 @@ public class UserService : IUserService
             total = _usersRepository.GetAll().Count(),
             Users = _mapper.ProjectTo<UserData>(
             _usersRepository.GetAll()
-                .OrderBy(u => u.Username)
-                .Skip(page * pageSize)
-                .Take(pageSize))
+                .OrderBy(u => u.Username))
         };
     }
 
