@@ -36,7 +36,7 @@ public class StatusService
 
     public IEnumerable<Guid> GetOnlineUsersIDs()
     {
-        _logger.LogInformation($"online users: {string.Join('\n', _onlineUsers.ToArray())}");
+        _logger.LogInformation($"online users: {_onlineUsers.Count}");
         return _onlineUsers.AsEnumerable();
     }
 }
