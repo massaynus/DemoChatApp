@@ -57,10 +57,13 @@ public class AuthRepository : IAuthRepository
                 OperationResult = UserLoginOperationResult.failure
             };
 
+        var userData = _mapper.Map<UserData>(user);
+
         return new()
         {
             Username = username,
-            JWTToken = _jwt.GenerateToken(_mapper.Map<UserData>(user)),
+            JWTToken = _jwt.GenerateToken(userData),
+            User = userData,
             OperationResult = UserLoginOperationResult.success
         };
     }
