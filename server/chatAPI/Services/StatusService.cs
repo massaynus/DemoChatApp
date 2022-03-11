@@ -9,7 +9,7 @@ namespace chatAPI.Services;
 
 public class StatusService
 {
-    private readonly ConcurrentDictionary<Guid, string> _onlineUsers;
+    private readonly HashSet<Guid> _onlineUsers;
     private readonly ILogger<StatusService> _logger;
 
     public StatusService(ILogger<StatusService> logger)
@@ -20,25 +20,23 @@ public class StatusService
 
     public void AddOnlineUser(Guid id)
     {
-        _onlineUsers.TryAdd(id, "online");
+        _onlineUsers.Add(id);
         _logger.LogInformation($"Added online user {id.ToString()}");
     }
 
     public void RemoveOnlineUser(Guid id)
     {
-        _onlineUsers.TryUpdate(id, "offline", "online");
+        _onlineUsers.Remove(id);
         _logger.LogInformation($"Removed online user {id.ToString()}");
     }
 
     public bool IsUserOnline(Guid id)
     {
-        var exists = _onlineUsers.TryGetValue(id, out string status);
-        return exists && status == "online";
+        return _onlineUsers.Contains(id);
     }
 
     public IEnumerable<Guid> GetOnlineUsersIDs()
     {
-        _logger.LogInformation($"online users: {_onlineUsers.Count}");
-        return _onlineUsers.Where(pair => pair.Value == "online").Select(pair => pair.Key);
+        return _onlineUsers.AsEnumerable();
     }
 }
