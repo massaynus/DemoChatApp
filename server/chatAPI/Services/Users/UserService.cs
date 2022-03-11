@@ -9,6 +9,8 @@ public class UserService : IUserService
 {
     private bool disposedValue;
 
+    private const int PAGE_SIZE = 24;
+
     private readonly CryptoService _crypto;
 
     private readonly IMapper _mapper;
@@ -21,26 +23,42 @@ public class UserService : IUserService
         _usersRepository = usersRepository;
     }
 
-    public IEnumerable<UserData> GetUsersByStatus(string status)
+    public UserDataList GetUsersByStatus(string status, int page, int pageSize)
     {
-        return _mapper.ProjectTo<UserData>(
+        return new UserDataList()
+        {
+            page = 0,
+            total = _usersRepository.GetUsersByStatus(status).Count(),
+            Users = _mapper.ProjectTo<UserData>(
             _usersRepository.GetUsersByStatus(status)
-        );
+                .OrderBy(u => u.Username)
+                .Skip(page * pageSize)
+                .Take(pageSize))
+        };
     }
 
-    public IEnumerable<UserData> GetAll(int page)
+    public UserDataList GetUsersByStatus(string status, int page = 0)
     {
-        return GetAll(page, 24);
+        return GetUsersByStatus(status, page, PAGE_SIZE);
     }
 
-    public IEnumerable<UserData> GetAll(int page, int pageSize)
+    public UserDataList GetAll(int page, int pageSize)
     {
-        return _mapper.ProjectTo<UserData>(
+        return new UserDataList()
+        {
+            page = 0,
+            total = _usersRepository.GetAll().Count(),
+            Users = _mapper.ProjectTo<UserData>(
             _usersRepository.GetAll()
                 .OrderBy(u => u.Username)
                 .Skip(page * pageSize)
-                .Take(pageSize)
-        );
+                .Take(pageSize))
+        };
+    }
+
+    public UserDataList GetAll(int page = 0)
+    {
+        return GetAll(page, PAGE_SIZE);
     }
 
     public UserData GetUserById(Guid id)

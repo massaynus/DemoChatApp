@@ -9,14 +9,14 @@ public interface IUserService : IDisposable
     /// Get all users
     /// </summary>
     /// <returns>IEnumerable<User></returns>
-    IEnumerable<UserData> GetAll(int page);
+    UserDataList GetAll(int page);
 
     /// <summary>
     /// Get all users with the supplied status
     /// </summary>
     /// <param name="status">status filter</param>
     /// <returns>IEnumerable<User></returns>
-    IEnumerable<UserData> GetUsersByStatus(string status);
+    UserDataList GetUsersByStatus(string status, int page);
 
     /// <summary>
     /// Get one user using ID
