@@ -65,10 +65,9 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("/SignIn", Name = "SignIn")]
-    public async Task<UserLoginResponse> SignIn(UserLoginRequest userLoginRequest)
+    public UserLoginResponse SignIn(UserLoginRequest userLoginRequest)
     {
         var result = _authService.Authenticate(userLoginRequest);
-        await _statusHub.Clients.All.SendAsync("UserLoggedIn", result.User);
         return result;
     }
 
