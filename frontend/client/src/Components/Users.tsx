@@ -53,7 +53,7 @@ export default function Users({ users }: {
                 {dayjs(rowData.elapsed).format('HH:mm:ss')}
             </TableCell>
             <TableCell key={'online'} align={'center'}>
-                {rowData.isOnline === null ? "Offline" : "Online"}
+                {rowData.isOnline ? "Online" : "Offline"}
             </TableCell>
         </TableRow>
     ))
