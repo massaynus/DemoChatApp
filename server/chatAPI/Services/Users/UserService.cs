@@ -62,7 +62,8 @@ public class UserService : IUserService
     {
         var users = _mapper.ProjectTo<UserData>(
             _usersRepository.GetAll()
-                .OrderBy(u => u.Username));
+                .OrderBy(u => u.Username))
+                .ToList();
 
         foreach(var user in users)
             user.IsOnline = _statusService.IsUserOnline(user.ID);
