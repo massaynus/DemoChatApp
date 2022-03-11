@@ -62,7 +62,7 @@ function Home() {
       }
     }
 
-    const users = await ApiClientInstance.getUsers()
+    const users = await ApiClientInstance.getOnlineUsers()
     setUsers(users)
     setUser(user => users.users.find(u => u.username === user.username) || user)
 
@@ -107,7 +107,7 @@ function Home() {
         { variant: 'info', preventDuplicate: true }
       )
 
-      const users = await ApiClientInstance.getUsers()
+      const users = await ApiClientInstance.getOnlineUsers()
       setUsers(users)
     });
 
@@ -122,7 +122,7 @@ function Home() {
         )
       }
 
-      const onlineUsers = await ApiClientInstance.getUsers()
+      const onlineUsers = await ApiClientInstance.getOnlineUsers()
       setUsers(onlineUsers)
     });
 

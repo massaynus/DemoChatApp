@@ -47,6 +47,11 @@ export default class ApiClient {
         return this.validateReponse(response)
     }
 
+    async getOnlineUsers(): Promise<UserList> {
+        const response = await this.axios.get(`/api/Users/GetOnlineUsers`)
+        return this.validateReponse(response)
+    }
+
     async getUserByStatus(status: string): Promise<UserList> {
         const response = await this.axios.get(`/api/Users/GetUsersByStatus/${status}`)
         return this.validateReponse(response)
