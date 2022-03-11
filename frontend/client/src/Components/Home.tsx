@@ -70,7 +70,7 @@ function Home() {
         const users = usersList.users
         const newUsers = Array.from(users)
         const idx = newUsers.findIndex(u => u.id === changedUser.id)
-        newUsers[idx] = changedUser
+        newUsers[idx] = {...newUsers[idx], status: changedUser.status}
 
         return { ...usersList, users: newUsers }
       })
