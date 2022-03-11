@@ -32,7 +32,7 @@ public class UserService : IUserService
         return new UserDataList()
         {
             page = 0,
-            total = _usersRepository.GetAll().Where(u => ids.Contains(u.ID)).Count(),
+            total = ids.Count(),
             Users = _mapper.ProjectTo<UserData>(
                 _usersRepository.GetAll()
                 .Where(u => ids.Contains(u.ID)))
@@ -60,13 +60,18 @@ public class UserService : IUserService
 
     public UserDataList GetAll(int page, int pageSize)
     {
+        var users = _mapper.ProjectTo<UserData>(
+            _usersRepository.GetAll()
+                .OrderBy(u => u.Username));
+
+        foreach(var user in users)
+            user.IsOnline = _statusService.IsUserOnline(user.ID);
+
         return new UserDataList()
         {
             page = 0,
             total = _usersRepository.GetAll().Count(),
-            Users = _mapper.ProjectTo<UserData>(
-            _usersRepository.GetAll()
-                .OrderBy(u => u.Username))
+            Users = users
         };
     }
 

@@ -11,6 +11,9 @@ public class UserData
     public string Status { get; set; }
     public string Role { get; set; }
 
+
+    public bool IsOnline { get; set; }
+
     public DateTime DateOfBirht { get; set; }
 
     public DateTimeOffset LastStatusChange { get; set; }
