@@ -14,6 +14,8 @@ public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
     private readonly IMapper _mapper;
+
+    // Adding these in case i want to add user status features
     private readonly IHubContext<StatusHub> _statusHub;
 
     private readonly ApplicationDbContext _db;

@@ -61,6 +61,7 @@ public class UsersController : ControllerBase
     [HttpPost("/api/[controller]/CreateStatus", Name = "CreateStatus")]
     public async Task<Status> CreateStatus([FromBody] Status status)
     {
+        // I know this should be its own controller but hey, small project 	(˵ ͡° ͜ʖ ͡°˵)
         if (string.IsNullOrWhiteSpace(status.StatusName))
         {
             Response.StatusCode = StatusCodes.Status400BadRequest;

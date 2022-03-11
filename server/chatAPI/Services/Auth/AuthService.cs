@@ -48,7 +48,28 @@ public class AuthService : IAuthService
 
     public UserLoginResponse Authenticate(string username, string password)
     {
-        return _authRepository.Authenticate(username, password);
+        var user = _appDb.Users
+            .Include(u => u.Role)
+            .AsSingleQuery()
+            .FirstOrDefault(u => u.Username == username);
+
+        if (user is null || !_crypto.Verify(user.Password, password))
+            return new()
+            {
+                Username = username,
+                JWTToken = null,
+                OperationResult = UserLoginOperationResult.failure
+            };
+
+        var userData = _mapper.Map<UserData>(user);
+
+        return new()
+        {
+            Username = username,
+            JWTToken = _jwt.GenerateToken(userData),
+            User = userData,
+            OperationResult = UserLoginOperationResult.success
+        };
     }
 
     public UserLoginResponse Authenticate(UserLoginRequest userLoginRequest)
