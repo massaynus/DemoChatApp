@@ -73,8 +73,10 @@ function Home() {
 
     connection.on("UserLoggedIn", (newUser: User) => {
       enqueueSnackbar(
-        `User ${newUser.username} Logged In!`,
-        { variant: 'info' }
+        newUser.username === user.username
+          ? `Welcomeback ${user.username}!!`
+          : `User ${newUser.username} Logged In!`,
+        { variant: 'info', preventDuplicate: true }
       )
     });
   }
