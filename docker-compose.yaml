@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - 127.0.0.1:5002:80
+      - 5002:80
 
   front:
     build:
