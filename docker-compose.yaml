@@ -3,7 +3,6 @@ version: "3"
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2017-latest
-
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${MSSQL_SA_PASSWORD}
@@ -11,4 +10,22 @@ services:
       - 127.0.0.1:1433:1433
     volumes:
       - /var/opt/mssql:/var/opt/mssql
+
+  api:
+    build:
+      context: ./server/chatAPI
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5002:80
+
+  front:
+    build:
+      context: ./frontend/client/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - REACT_APP_API_BASE_URL=http://127.0.0.1:5002
 
